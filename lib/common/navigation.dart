@@ -3,8 +3,6 @@ import 'package:restaurant_app/page/home_page.dart';
 import 'package:restaurant_app/page/search_page.dart';
 import 'package:restaurant_app/page/setting_page.dart';
 
-import 'styles.dart';
-
 class Navigation extends StatefulWidget {
 
   static const routeName = '/navigation';
@@ -23,7 +21,6 @@ class _NavigationState extends State<Navigation> {
     return Scaffold(
       body: _listWidget[_bottomNavIndex],
       bottomNavigationBar: BottomNavigationBar(
-        selectedItemColor: secondaryColor,
         currentIndex: _bottomNavIndex,
         items: _bottomNavBarItems,
         onTap: (selected) {
@@ -38,21 +35,21 @@ class _NavigationState extends State<Navigation> {
   final List<BottomNavigationBarItem> _bottomNavBarItems = [
     const BottomNavigationBarItem(
       icon: Icon(Icons.home),
-      label: "Home",
+      label: "Beranda",
     ),
     const BottomNavigationBarItem(
       icon: Icon(Icons.search),
-      label: "Search",
+      label: "Cari",
     ),
     const BottomNavigationBarItem(
       icon: Icon(Icons.settings),
-      label: "Setting",
+      label: "Pengaturan",
     ),
   ];
 
   final List<Widget> _listWidget = [
     const HomePage(),
-    const SearchPage(),
+    const SearchPage2(),
     const SettingPage()
   ];
 }
