@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:restaurant_app/common/styles.dart';
 import 'package:restaurant_app/model/Restaurant.dart';
+import 'package:restaurant_app/page/detail_page.dart';
 import 'package:shimmer/shimmer.dart';
 
 class SearchPage2 extends StatelessWidget {
@@ -11,7 +12,6 @@ class SearchPage2 extends StatelessWidget {
     return SafeArea(
       child: Scaffold(
         appBar: AppBar(
-          elevation: 1,
           title: const TextField(
             decoration: InputDecoration(
                 hintText: 'Cari',
@@ -82,31 +82,32 @@ class SearchPage2 extends StatelessWidget {
     return Material(
       child: ListTile(
         contentPadding: const EdgeInsets.symmetric(horizontal: 24, vertical: 4),
-        leading: Hero(
-          tag: restaurant.pictureId,
-          child: ClipRRect(
-            borderRadius: BorderRadius.circular(12.0),
-            child: Container(
-              color: lightColorScheme.tertiary,
-              width: 64,
-              child: Stack(children: [
-                ClipRRect(
-                  borderRadius: BorderRadius.circular(12.0),
+        leading: ClipRRect(
+          borderRadius: BorderRadius.circular(12.0),
+          child: Container(
+            width: 84,
+            height: 84,
+            color: lightColorScheme.tertiary,
+            child: Stack(children: [
+              ClipRRect(
+                borderRadius: BorderRadius.circular(12.0),
+                child: Hero(
+                  tag: restaurant.pictureId,
                   child: Image.network(
                     restaurant.pictureId,
                     fit: BoxFit.cover,
-                    width: 64,
+                    width:  84,
                     height: 36,
                   ),
                 ),
-                Container(
-                    alignment: Alignment.bottomCenter,
-                    child: const Text(
-                      'data',
-                      style: TextStyle(color: Colors.white),
-                    ))
-              ]),
-            ),
+              ),
+              Container(
+                  alignment: Alignment.bottomCenter,
+                  child: const Text(
+                    'Diskon 50%',
+                    style: TextStyle(color: Colors.white, fontSize: 10),
+                  ))
+            ]),
           ),
         ),
         title: Text(
@@ -123,7 +124,7 @@ class SearchPage2 extends StatelessWidget {
               Text(restaurant.rating.toString()),
         ]),
         onTap: () {
-          // Navigator.pushNamed(context, ArticleDetailPage.routeName, arguments: restaurant);
+          Navigator.pushNamed(context, RestaurantDetailPage.routeName, arguments: restaurant);
         },
       ),
     );
