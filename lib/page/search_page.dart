@@ -79,54 +79,55 @@ class SearchPage2 extends StatelessWidget {
   }
 
   Widget _buildRestaurantItem(BuildContext context, Restaurant restaurant) {
-    return Material(
-      child: ListTile(
-        contentPadding: const EdgeInsets.symmetric(horizontal: 24, vertical: 4),
-        leading: ClipRRect(
-          borderRadius: BorderRadius.circular(12.0),
-          child: Container(
-            width: 84,
-            height: 84,
-            color: lightColorScheme.tertiary,
-            child: Stack(children: [
-              ClipRRect(
-                borderRadius: BorderRadius.circular(12.0),
-                child: Hero(
-                  tag: restaurant.pictureId,
-                  child: Image.network(
-                    restaurant.pictureId,
-                    fit: BoxFit.cover,
-                    width:  84,
-                    height: 36,
-                  ),
+    return ListTile(
+      contentPadding: const EdgeInsets.symmetric(horizontal: 24, vertical: 4),
+      leading: ClipRRect(
+        borderRadius: BorderRadius.circular(12.0),
+        child: Container(
+          width: 84,
+          color: lightColorScheme.tertiary,
+          child: Stack(children: [
+            ClipRRect(
+              borderRadius: BorderRadius.circular(12.0),
+              child: Hero(
+                tag: restaurant.pictureId,
+                child: Image.network(
+                  restaurant.pictureId,
+                  fit: BoxFit.cover,
+                  width:  84,
+                  height: 36,
                 ),
               ),
-              Container(
-                  alignment: Alignment.bottomCenter,
-                  child: const Text(
+            ),
+            Container(
+                alignment: Alignment.bottomCenter,
+                child: const Padding(
+                  padding: EdgeInsets.only(bottom: 2),
+                  child: Text(
                     'Diskon 50%',
                     style: TextStyle(color: Colors.white, fontSize: 10),
-                  ))
-            ]),
-          ),
+                  ),
+                ))
+          ]),
         ),
-        title: Text(
-          restaurant.name,
-          style: const TextStyle(fontWeight: FontWeight.bold),
-        ),
-        subtitle:
-            Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-              const Text(
-                'Makanan & Minuman',
-                style: TextStyle(fontSize: 8, fontWeight: FontWeight.w500),
-              ),
-              Text(restaurant.city),
-              Text(restaurant.rating.toString()),
-        ]),
-        onTap: () {
-          Navigator.pushNamed(context, RestaurantDetailPage.routeName, arguments: restaurant);
-        },
       ),
+      title: Text(
+        restaurant.name,
+        style: const TextStyle(fontWeight: FontWeight.bold),
+      ),
+      subtitle:
+          Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+            const Text(
+              'Makanan & Minuman',
+              style: TextStyle(fontSize: 8, fontWeight: FontWeight.w500),
+            ),
+            const SizedBox(height: 8,),
+            Text(restaurant.city),
+            Text(restaurant.rating.toString()),
+      ]),
+      onTap: () {
+        Navigator.pushNamed(context, RestaurantDetailPage.routeName, arguments: restaurant);
+      },
     );
   }
 }
