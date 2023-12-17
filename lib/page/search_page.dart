@@ -62,9 +62,12 @@ class SearchPage2 extends StatelessWidget {
             return const Center(child: Text('Tidak ada data'));
           }
         }
-        return ListView.builder(itemBuilder: (context, index) {
-          return const MyShimmer();
-        });
+        return SizedBox(
+          height: 1000,
+          child: ListView.builder(itemCount: 10, itemBuilder: (context, index) {
+            return const MyShimmer();
+          }),
+        );
       },
     );
   }

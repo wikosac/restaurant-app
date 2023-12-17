@@ -81,24 +81,25 @@ class HomePage extends StatelessWidget {
             final restaurant = data.restaurants;
             return SizedBox(
               height: 192,
-              child: Expanded(
-                child: ListView.builder(
-                  itemExtent: 150,
-                  scrollDirection: Axis.horizontal,
-                  itemCount: restaurant.length,
-                  itemBuilder: (context, index) {
-                    return _buildCard(context, restaurant[index]);
-                  },
-                ),
+              child: ListView.builder(
+                itemExtent: 150,
+                scrollDirection: Axis.horizontal,
+                itemCount: restaurant.length,
+                itemBuilder: (context, index) {
+                  return _buildCard(context, restaurant[index]);
+                },
               ),
             );
           } else {
             return const Center(child: Text('Tidak ada data'));
           }
         }
-        return ListView.builder(itemBuilder: (context, index) {
-          return const MyShimmer();
-        });
+        return SizedBox(
+          height: 200,
+          child: ListView.builder(itemCount: 10, itemBuilder: (context, index) {
+            return const MyShimmer();
+          }),
+        );
       },
     );
   }
