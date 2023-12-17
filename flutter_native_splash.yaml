@@ -1,16 +1,14 @@
 # flutter_native_splash-development.yaml
 flutter_native_splash:
   color: "#FFD9E2"
-  image: assets/logo.png
-  branding: assets/restaurant.png
+  image: assets/icon.png
   color_dark: "#3E001D"
-  image_dark: assets/logo.png
-  branding_dark: assets/restaurant.png
+  image_dark: assets/icon.png
 
   android_12:
-    image: assets/logo.png
+    image: assets/icon.png
     icon_background_color: "#FFD9E2"
-    image_dark: assets/logo.png
+    image_dark: assets/icon.png
     icon_background_color_dark: "#3E001D"
 
   web: false

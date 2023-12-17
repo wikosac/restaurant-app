@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:restaurant_app/common/styles.dart';
 import 'package:restaurant_app/model/Restaurant.dart';
 import 'package:restaurant_app/page/detail_page.dart';
-import 'package:shimmer/shimmer.dart';
+import 'package:restaurant_app/widget/shimmer.dart';
 
 class SearchPage2 extends StatelessWidget {
   const SearchPage2({super.key});
@@ -12,14 +12,33 @@ class SearchPage2 extends StatelessWidget {
     return SafeArea(
       child: Scaffold(
         appBar: AppBar(
-          title: const TextField(
+          surfaceTintColor: Colors.white,
+          title: TextField(
+            onTap: () {
+              // Display a Snackbar
+              const snackBar = SnackBar(
+                content: Text('Fitur ini segera hadir!'),
+                duration: Duration(seconds: 3), // Adjust the duration as needed
+              );
+
+              // Find the Scaffold in the widget tree and show the Snackbar
+              ScaffoldMessenger.of(context).showSnackBar(snackBar);
+            },
             decoration: InputDecoration(
-                hintText: 'Cari',
-                prefixIcon: Icon(Icons.search),
-                border: InputBorder.none),
+                hintText: 'Cari restaurant..',
+                hintStyle:
+                    const TextStyle(fontSize: 12, fontWeight: FontWeight.w300),
+                contentPadding: const EdgeInsets.all(0),
+                prefixIcon: const Icon(Icons.search),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(36),
+                )),
           ),
         ),
-        body: _buildList(context),
+        body: Padding(
+          padding: const EdgeInsets.only(top: 16.0),
+          child: _buildList(context),
+        ),
       ),
     );
   }
@@ -36,7 +55,7 @@ class SearchPage2 extends StatelessWidget {
             return ListView.builder(
               itemCount: restaurant.length,
               itemBuilder: (context, index) {
-                return _buildRestaurantItem(context, restaurant[index]);
+                return _buildListItem(context, restaurant[index]);
               },
             );
           } else {
@@ -44,90 +63,106 @@ class SearchPage2 extends StatelessWidget {
           }
         }
         return ListView.builder(itemBuilder: (context, index) {
-          return _shimmer(context);
+          return const MyShimmer();
         });
       },
     );
   }
 
-  Widget _shimmer(BuildContext context) {
-    // Show shimmer placeholder while loading
-    return Shimmer.fromColors(
-      baseColor: Colors.grey[300]!,
-      highlightColor: Colors.grey[100]!,
-      child: ListTile(
-        title: Container(
-          width: 24,
-          height: 16,
-          color: Colors.white,
-        ),
-        subtitle: Container(
-          width: 16,
-          height: 12,
-          color: Colors.white,
-        ),
-        leading: ClipRRect(
-          borderRadius: BorderRadius.circular(12.0),
-          child: Container(
-            color: Colors.white,
-            width: 64,
-            height: 64,
-          ),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildRestaurantItem(BuildContext context, Restaurant restaurant) {
-    return ListTile(
-      contentPadding: const EdgeInsets.symmetric(horizontal: 24, vertical: 4),
-      leading: ClipRRect(
-        borderRadius: BorderRadius.circular(12.0),
-        child: Container(
-          width: 84,
-          color: lightColorScheme.tertiary,
-          child: Stack(children: [
+  Widget _buildListItem(BuildContext context, Restaurant restaurant) {
+    return InkWell(
+      onTap: () {
+        Navigator.pushNamed(context, RestaurantDetailPage.routeName,
+            arguments: restaurant);
+      },
+      child: Container(
+        padding: const EdgeInsets.all(16),
+        child: Row(
+          children: [
             ClipRRect(
               borderRadius: BorderRadius.circular(12.0),
-              child: Hero(
-                tag: restaurant.pictureId,
-                child: Image.network(
-                  restaurant.pictureId,
-                  fit: BoxFit.cover,
-                  width:  84,
-                  height: 36,
-                ),
+              child: Container(
+                width: 100,
+                height: 100,
+                color: lightColorScheme.tertiary,
+                child: Stack(children: [
+                  ClipRRect(
+                    borderRadius: BorderRadius.circular(12.0),
+                    child: Hero(
+                      tag: restaurant.pictureId,
+                      child: Image.network(
+                        restaurant.pictureId,
+                        fit: BoxFit.cover,
+                        width: 100,
+                        height: 80,
+                        errorBuilder: (BuildContext context, Object error, StackTrace? stackTrace) {
+                          // Show a placeholder image from a local asset when loading fails
+                          return Image.asset(
+                            'assets/icon.png', // Replace with the path to your local asset image
+                            width: 100,
+                            height: 80,
+                            fit: BoxFit.cover,
+                          );
+                        },
+                      ),
+                    ),
+                  ),
+                  Container(
+                      alignment: Alignment.bottomCenter,
+                      child: const Padding(
+                        padding: EdgeInsets.only(bottom: 2),
+                        child: Text(
+                          'Diskon 50%',
+                          style: TextStyle(color: Colors.white, fontSize: 10),
+                        ),
+                      )
+                  )
+                ]),
               ),
             ),
-            Container(
-                alignment: Alignment.bottomCenter,
-                child: const Padding(
-                  padding: EdgeInsets.only(bottom: 2),
-                  child: Text(
-                    'Diskon 50%',
-                    style: TextStyle(color: Colors.white, fontSize: 10),
-                  ),
-                ))
-          ]),
+            const SizedBox(
+              width: 12,
+            ),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  restaurant.name,
+                  style: const TextStyle(
+                      fontWeight: FontWeight.bold, fontSize: 16),
+                ),
+                const Text(
+                  'Makanan & Minuman',
+                  style: TextStyle(
+                      fontSize: 8,
+                      color: Colors.grey,
+                      fontWeight: FontWeight.w500),
+                ),
+                const SizedBox(
+                  height: 8,
+                ),
+                Text(
+                  restaurant.city,
+                  style: const TextStyle(
+                      fontWeight: FontWeight.bold, fontSize: 12),
+                ),
+                Row(
+                  children: [
+                    const Icon(
+                      Icons.star,
+                      color: Colors.yellow,
+                    ),
+                    const SizedBox(
+                      width: 4,
+                    ),
+                    Text(restaurant.rating.toString()),
+                  ],
+                ),
+              ],
+            ),
+          ],
         ),
       ),
-      title: Text(
-        restaurant.name,
-        style: const TextStyle(fontWeight: FontWeight.bold),
-      ),
-      subtitle:
-          Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-            const Text(
-              'Makanan & Minuman',
-              style: TextStyle(fontSize: 8, fontWeight: FontWeight.w500),
-            ),
-            const SizedBox(height: 8,),
-            Text(restaurant.city),
-            Text(restaurant.rating.toString()),
-      ]),
-      onTap: () {
-        Navigator.pushNamed(context, RestaurantDetailPage.routeName, arguments: restaurant);
-      },
     );
   }
 }

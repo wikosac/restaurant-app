@@ -19,17 +19,31 @@ class _RestaurantDetailPageState extends State<RestaurantDetailPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text(widget.restaurant.name),
-      ),
+      appBar: AppBar(),
       body: SingleChildScrollView(
         child: Column(
           children: [
             Hero(
                 tag: widget.restaurant.pictureId,
-                child: Image.network(widget.restaurant.pictureId)),
+                child: ClipRRect(
+                    borderRadius: const BorderRadius.vertical(
+                        bottom: Radius.circular(16)),
+                    child: Image.network(
+                      widget.restaurant.pictureId,
+                      fit: BoxFit.cover,
+                      errorBuilder: (BuildContext context, Object error, StackTrace? stackTrace) {
+                        // Show a placeholder image from a local asset when loading fails
+                        return Image.asset(
+                          'assets/restaurant.png',
+                          fit: BoxFit.cover,
+                          height: 180,
+                        );
+                      },
+                    )
+                )
+            ),
             Padding(
-              padding: const EdgeInsets.all(10),
+              padding: const EdgeInsets.all(16),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -43,7 +57,19 @@ class _RestaurantDetailPageState extends State<RestaurantDetailPage> {
                   ),
                   const SizedBox(height: 8),
                   Text('Lokasi: ${widget.restaurant.city}'),
-                  Text('Rating: ${widget.restaurant.rating.toString()}'),
+                  Row(
+                    children: [
+                      const Text('Rating: '),
+                      const Icon(
+                        Icons.star,
+                        color: Colors.yellow,
+                      ),
+                      const SizedBox(
+                        width: 4,
+                      ),
+                      Text(widget.restaurant.rating.toString()),
+                    ],
+                  ),
                   const SizedBox(
                     height: 8,
                   ),
@@ -64,15 +90,17 @@ class _RestaurantDetailPageState extends State<RestaurantDetailPage> {
                     ),
                   ),
                   const SizedBox(
-                    height: 8,
+                    height: 16,
                   ),
-                  const Text('Makanan'),
-                  _buildList(context, widget.restaurant.menus.foods, 'assets/food.png'),
+                  const Text('Makanan', style: TextStyle(fontWeight: FontWeight.bold),),
+                  _buildList(context, widget.restaurant.menus.foods,
+                      'assets/food.png'),
                   const SizedBox(
                     height: 8,
                   ),
-                  const Text('Minuman'),
-                  _buildList(context, widget.restaurant.menus.drinks, 'assets/drink.png'),
+                  const Text('Minuman', style: TextStyle(fontWeight: FontWeight.bold),),
+                  _buildList(context, widget.restaurant.menus.drinks,
+                      'assets/drink.png'),
                 ],
               ),
             ),
@@ -84,16 +112,14 @@ class _RestaurantDetailPageState extends State<RestaurantDetailPage> {
 
   Widget _buildList(BuildContext context, List<Menu> menus, String asset) {
     return SizedBox(
-      height: 120,
-      child: Expanded(
-        child: ListView.builder(
-          itemExtent: 180,
-          scrollDirection: Axis.horizontal,
-          itemCount: menus.length,
-          itemBuilder: (context, index) {
-            return _buildMenuItem(context, menus[index], asset);
-          },
-        ),
+      height: 136,
+      child: ListView.builder(
+        itemExtent: 180,
+        scrollDirection: Axis.horizontal,
+        itemCount: menus.length,
+        itemBuilder: (context, index) {
+          return _buildMenuItem(context, menus[index], asset);
+        },
       ),
     );
   }
@@ -105,14 +131,14 @@ class _RestaurantDetailPageState extends State<RestaurantDetailPage> {
         borderRadius: BorderRadius.circular(16.0),
         child: Container(
           padding: const EdgeInsets.all(8),
-          decoration: BoxDecoration(
+          decoration: const BoxDecoration(
             color: Colors.white,
             boxShadow: [
               BoxShadow(
-                color: Colors.grey.withOpacity(0.8),
-                spreadRadius: 2,
-                blurRadius: 1,
-                offset: const Offset(0, 3),
+                color: Colors.grey,
+                spreadRadius: 4,
+                blurRadius: 2,
+                offset: Offset(2, 5),
               ),
             ],
           ),
@@ -120,13 +146,24 @@ class _RestaurantDetailPageState extends State<RestaurantDetailPage> {
           transformAlignment: Alignment.center,
           constraints: const BoxConstraints.expand(),
           child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Image.asset(asset),
-              const SizedBox(height: 4,),
-              Expanded(
+              Center(child: Image.asset(asset)),
+              const SizedBox(
+                height: 4,
+              ),
+              Padding(
+                padding: const EdgeInsets.only(left: 8.0),
                 child: Text(
                   menu.name,
-                  style: const TextStyle(fontSize: 10),
+                  style: const TextStyle(fontSize: 10, fontWeight: FontWeight.bold),
+                ),
+              ),
+              const Padding(
+                padding: EdgeInsets.only(left: 8.0),
+                child: Text(
+                  'Rp10.0000',
+                  style: TextStyle(fontSize: 10),
                 ),
               ),
             ],
