@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:restaurant_app/common/styles.dart';
-import 'package:restaurant_app/model/Restaurant.dart';
+import 'package:restaurant_app/data/model/restaurant_result.dart';
+import 'package:restaurant_app/data/provider/restaurant_provider.dart';
 import 'package:restaurant_app/widget/shimmer.dart';
 
 import 'detail_page.dart';
@@ -16,18 +18,20 @@ class HomePage extends StatelessWidget {
             'Selamat datang!',
             style: TextStyle(fontWeight: FontWeight.bold),
           ),
-      actions: [
-        Padding(
-          padding: const EdgeInsets.only(right: 8.0),
-          child: ClipRRect(
-            borderRadius: BorderRadius.circular(24),
-            child: Container(
-                color: lightColorScheme.primaryContainer,
-                padding: const EdgeInsets.all(6),
-                child: const Icon(Icons.person,)),
-          ),
-        )
-      ]),
+          actions: [
+            Padding(
+              padding: const EdgeInsets.only(right: 8.0),
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(24),
+                child: Container(
+                    color: lightColorScheme.primaryContainer,
+                    padding: const EdgeInsets.all(6),
+                    child: const Icon(
+                      Icons.person,
+                    )),
+              ),
+            )
+          ]),
       body: SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -71,34 +75,45 @@ class HomePage extends StatelessWidget {
   }
 
   Widget _buildList(BuildContext context) {
-    return FutureBuilder<String>(
-      future: DefaultAssetBundle.of(context)
-          .loadString('assets/local_restaurant.json'),
-      builder: (context, snapshot) {
-        if (snapshot.connectionState == ConnectionState.done) {
-          if (snapshot.hasData) {
-            final data = dataFromJson(snapshot.data!);
-            final restaurant = data.restaurants;
-            return SizedBox(
-              height: 192,
-              child: ListView.builder(
-                itemExtent: 150,
-                scrollDirection: Axis.horizontal,
-                itemCount: restaurant.length,
+    return Consumer<RestaurantProvider>(
+      builder: (context, state, _) {
+        if (state.state == ResultState.loading) {
+          SizedBox(
+            height: 120,
+            child: ListView.builder(
+                itemCount: 3,
                 itemBuilder: (context, index) {
-                  return _buildCard(context, restaurant[index]);
-                },
-              ),
-            );
-          } else {
-            return const Center(child: Text('Tidak ada data'));
-          }
+                  return const MyShimmer();
+                }),
+          );
+        } else if (state.state == ResultState.hasData) {
+          final data = state.restaurantResult.restaurants;
+          return SizedBox(
+            height: 192,
+            child: ListView.builder(
+              itemExtent: 150,
+              scrollDirection: Axis.horizontal,
+              itemCount: data.length,
+              itemBuilder: (context, index) {
+                var restaurant = data[index];
+                return _buildCard(context, restaurant);
+              },
+            ),
+          );
+        } else if (state.state == ResultState.noData) {
+          return const SizedBox(
+              height: 120, child: Center(child: Text('Tidak ada data')));
+        } else if (state.state == ResultState.error) {
+          return Center(
+            child: Material(
+              child: Text(state.message),
+            ),
+          );
         }
-        return SizedBox(
-          height: 200,
-          child: ListView.builder(itemCount: 10, itemBuilder: (context, index) {
-            return const MyShimmer();
-          }),
+        return const Center(
+          child: Material(
+            child: Text(''),
+          ),
         );
       },
     );
@@ -135,11 +150,13 @@ class HomePage extends StatelessWidget {
                     restaurant.pictureId,
                     height: 100,
                     fit: BoxFit.cover,
-                    errorBuilder: (BuildContext context, Object error, StackTrace? stackTrace) {
+                    errorBuilder: (BuildContext context, Object error,
+                        StackTrace? stackTrace) {
                       // Show a placeholder image from a local asset when loading fails
                       return Center(
                         child: Image.asset(
-                          'assets/icon.png', // Replace with the path to your local asset image
+                          'assets/icon.png',
+                          // Replace with the path to your local asset image
                           height: 100,
                           fit: BoxFit.cover,
                         ),

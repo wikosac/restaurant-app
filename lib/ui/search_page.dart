@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:restaurant_app/common/styles.dart';
-import 'package:restaurant_app/model/Restaurant.dart';
-import 'package:restaurant_app/page/detail_page.dart';
+import 'package:restaurant_app/data/model/restaurant_result.dart';
+import 'package:restaurant_app/data/provider/restaurant_provider.dart';
+import 'package:restaurant_app/ui/detail_page.dart';
 import 'package:restaurant_app/widget/shimmer.dart';
 
-class SearchPage2 extends StatelessWidget {
-  const SearchPage2({super.key});
+class SearchPage extends StatelessWidget {
+  const SearchPage({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -28,7 +30,8 @@ class SearchPage2 extends StatelessWidget {
                 hintText: 'Cari restaurant..',
                 hintStyle:
                     const TextStyle(fontSize: 12, fontWeight: FontWeight.w300),
-                contentPadding: const EdgeInsets.all(0),
+                contentPadding:
+                    const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
                 prefixIcon: const Icon(Icons.search),
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(36),
@@ -44,29 +47,39 @@ class SearchPage2 extends StatelessWidget {
   }
 
   Widget _buildList(BuildContext context) {
-    return FutureBuilder<String>(
-      future: DefaultAssetBundle.of(context)
-          .loadString('assets/local_restaurant.json'),
-      builder: (context, snapshot) {
-        if (snapshot.connectionState == ConnectionState.done) {
-          if (snapshot.hasData) {
-            final data = dataFromJson(snapshot.data!);
-            final restaurant = data.restaurants;
-            return ListView.builder(
-              itemCount: restaurant.length,
-              itemBuilder: (context, index) {
-                return _buildListItem(context, restaurant[index]);
-              },
-            );
-          } else {
-            return const Center(child: Text('Tidak ada data'));
-          }
+    return Consumer<RestaurantProvider>(
+      builder: (context, state, _) {
+        if (state.state == ResultState.loading) {
+          return SizedBox(
+            height: 1000,
+            child: ListView.builder(
+                itemCount: 10,
+                itemBuilder: (context, index) {
+                  return const MyShimmer();
+                }),
+          );
+        } else if (state.state == ResultState.hasData) {
+          final data = state.restaurantResult.restaurants;
+          return ListView.builder(
+            itemCount: data.length,
+            itemBuilder: (context, index) {
+              return _buildListItem(context, data[index]);
+            },
+          );
+        } else if (state.state == ResultState.noData) {
+          return const SizedBox(
+              height: 120, child: Center(child: Text('Tidak ada data')));
+        } else if (state.state == ResultState.error) {
+          return Center(
+            child: Material(
+              child: Text(state.message),
+            ),
+          );
         }
-        return SizedBox(
-          height: 1000,
-          child: ListView.builder(itemCount: 10, itemBuilder: (context, index) {
-            return const MyShimmer();
-          }),
+        return const Center(
+          child: Material(
+            child: Text(''),
+          ),
         );
       },
     );
@@ -98,10 +111,12 @@ class SearchPage2 extends StatelessWidget {
                         fit: BoxFit.cover,
                         width: 100,
                         height: 80,
-                        errorBuilder: (BuildContext context, Object error, StackTrace? stackTrace) {
+                        errorBuilder: (BuildContext context, Object error,
+                            StackTrace? stackTrace) {
                           // Show a placeholder image from a local asset when loading fails
                           return Image.asset(
-                            'assets/icon.png', // Replace with the path to your local asset image
+                            'assets/icon.png',
+                            // Replace with the path to your local asset image
                             width: 100,
                             height: 80,
                             fit: BoxFit.cover,
@@ -118,8 +133,7 @@ class SearchPage2 extends StatelessWidget {
                           'Diskon 50%',
                           style: TextStyle(color: Colors.white, fontSize: 10),
                         ),
-                      )
-                  )
+                      ))
                 ]),
               ),
             ),

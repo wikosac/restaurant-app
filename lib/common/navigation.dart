@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:restaurant_app/page/home_page.dart';
-import 'package:restaurant_app/page/search_page.dart';
-import 'package:restaurant_app/page/setting_page.dart';
+import 'package:provider/provider.dart';
+import 'package:restaurant_app/data/api/api_service.dart';
+import 'package:restaurant_app/data/provider/restaurant_provider.dart';
+import 'package:restaurant_app/ui/home_page.dart';
+import 'package:restaurant_app/ui/search_page.dart';
+import 'package:restaurant_app/ui/setting_page.dart';
 
 class Navigation extends StatefulWidget {
 
@@ -48,8 +51,14 @@ class _NavigationState extends State<Navigation> {
   ];
 
   final List<Widget> _listWidget = [
-    const HomePage(),
-    const SearchPage2(),
+    ChangeNotifierProvider<RestaurantProvider>(
+      create: (_) => RestaurantProvider(apiService: ApiService()),
+      child: const HomePage(),
+    ),
+    ChangeNotifierProvider<RestaurantProvider>(
+      create: (_) => RestaurantProvider(apiService: ApiService()),
+      child: const SearchPage(),
+    ),
     const SettingPage()
   ];
 }
