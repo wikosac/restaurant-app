@@ -3,7 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:restaurant_app/common/styles.dart';
 import 'package:restaurant_app/data/model/restaurant_result.dart';
 import 'package:restaurant_app/data/provider/restaurant_provider.dart';
-import 'package:restaurant_app/widget/shimmer.dart';
+import 'package:restaurant_app/widget/shimmer_card.dart';
 
 import 'detail_page.dart';
 
@@ -82,8 +82,9 @@ class HomePage extends StatelessWidget {
             height: 120,
             child: ListView.builder(
                 itemCount: 3,
+                scrollDirection: Axis.horizontal,
                 itemBuilder: (context, index) {
-                  return const MyShimmer();
+                  return const ShimmerCard();
                 }),
           );
         } else if (state.state == ResultState.hasData) {
@@ -110,10 +111,14 @@ class HomePage extends StatelessWidget {
             ),
           );
         }
-        return const Center(
-          child: Material(
-            child: Text(''),
-          ),
+        return SizedBox(
+          height: 120,
+          child: ListView.builder(
+              itemCount: 3,
+              scrollDirection: Axis.horizontal,
+              itemBuilder: (context, index) {
+                return const ShimmerCard();
+              }),
         );
       },
     );
