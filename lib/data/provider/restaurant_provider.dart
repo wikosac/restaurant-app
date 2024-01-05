@@ -10,16 +10,15 @@ class RestaurantProvider extends ChangeNotifier {
 
   RestaurantProvider({required this.apiService}) {
     _fetchRestaurant();
-    _fetchDetail(id: '');
   }
 
   late RestaurantResult _restaurantResult;
-  late DetailResult _detailResult;
+  DetailResult? _detailResult;
   late ResultState _state;
   String _message = '';
 
   RestaurantResult get restaurantResult => _restaurantResult;
-  DetailResult get detailResult => _detailResult;
+  DetailResult? get detailResult => _detailResult;
   ResultState get state => _state;
   String get message => _message;
 
@@ -33,6 +32,8 @@ class RestaurantProvider extends ChangeNotifier {
         notifyListeners();
         return _message = 'Tidak ada data';
       } else {
+        final firstRestaurantId = restaurant.restaurants[0].id;
+        await _fetchDetail(id: firstRestaurantId);
         _state = ResultState.hasData;
         notifyListeners();
         return _restaurantResult = restaurant;
@@ -40,7 +41,7 @@ class RestaurantProvider extends ChangeNotifier {
     } catch (e) {
       _state = ResultState.error;
       notifyListeners();
-      return _message = 'Error --> $e';
+      return _message = 'Koneksi error';
     }
   }
 
@@ -61,7 +62,7 @@ class RestaurantProvider extends ChangeNotifier {
     } catch (e) {
       _state = ResultState.error;
       notifyListeners();
-      return _message = 'Error --> $e';
+      return _message = 'Koneksi error';
     }
   }
 }

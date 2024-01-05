@@ -6,9 +6,7 @@ import 'package:restaurant_app/data/provider/restaurant_provider.dart';
 class RestaurantDetailPage extends StatefulWidget {
   static const routeName = '/restaurant_detail';
 
-  final String id;
-
-  const RestaurantDetailPage({Key? key, required this.id}) : super(key: key);
+  const RestaurantDetailPage({Key? key}) : super(key: key);
 
   @override
   State<RestaurantDetailPage> createState() => _RestaurantDetailPageState();
@@ -23,16 +21,16 @@ class _RestaurantDetailPageState extends State<RestaurantDetailPage> {
       appBar: AppBar(),
       body: SingleChildScrollView(
         child: Consumer<RestaurantProvider>(builder: (context, state, _) {
-          final data = state.detailResult.restaurant;
+          final data = state.detailResult?.restaurant;
           return Column(
             children: [
               Hero(
-                  tag: data.pictureId,
+                  tag: data?.id ?? '',
                   child: ClipRRect(
                       borderRadius: const BorderRadius.vertical(
                           bottom: Radius.circular(16)),
                       child: Image.network(
-                        data.pictureId,
+                        "https://restaurant-api.dicoding.dev/images/small/${data?.pictureId}",
                         fit: BoxFit.cover,
                         errorBuilder: (BuildContext context, Object error,
                             StackTrace? stackTrace) {
@@ -50,7 +48,7 @@ class _RestaurantDetailPageState extends State<RestaurantDetailPage> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      data.name,
+                      data?.name ?? '',
                       style: const TextStyle(
                         color: Colors.black,
                         fontWeight: FontWeight.bold,
@@ -58,7 +56,7 @@ class _RestaurantDetailPageState extends State<RestaurantDetailPage> {
                       ),
                     ),
                     const SizedBox(height: 8),
-                    Text('Lokasi: ${data.city}'),
+                    Text('Lokasi: ${data?.city}'),
                     Row(
                       children: [
                         const Text('Rating: '),
@@ -69,14 +67,14 @@ class _RestaurantDetailPageState extends State<RestaurantDetailPage> {
                         const SizedBox(
                           width: 4,
                         ),
-                        Text(data.rating.toString()),
+                        Text(data?.rating.toString() ?? ''),
                       ],
                     ),
                     const SizedBox(
                       height: 8,
                     ),
                     Text(
-                      data.description,
+                      data?.description ?? '',
                       style: const TextStyle(fontSize: 16),
                       maxLines: isExpanded ? 30 : 2,
                       overflow: TextOverflow.ellipsis,
@@ -100,7 +98,7 @@ class _RestaurantDetailPageState extends State<RestaurantDetailPage> {
                       'Makanan',
                       style: TextStyle(fontWeight: FontWeight.bold),
                     ),
-                    _buildList(context, data.menus.foods, 'assets/food.png'),
+                    _buildList(context, data?.menus.foods, 'assets/food.png'),
                     const SizedBox(
                       height: 8,
                     ),
@@ -108,7 +106,7 @@ class _RestaurantDetailPageState extends State<RestaurantDetailPage> {
                       'Minuman',
                       style: TextStyle(fontWeight: FontWeight.bold),
                     ),
-                    _buildList(context, data.menus.drinks, 'assets/drink.png'),
+                    _buildList(context, data?.menus.drinks, 'assets/drink.png'),
                   ],
                 ),
               ),
@@ -120,22 +118,22 @@ class _RestaurantDetailPageState extends State<RestaurantDetailPage> {
   }
 
   Widget _buildList(
-      BuildContext context, List<dr.Category> menus, String asset) {
+      BuildContext context, List<dr.Category>? menus, String asset) {
     return SizedBox(
       height: 136,
       child: ListView.builder(
         itemExtent: 180,
         scrollDirection: Axis.horizontal,
-        itemCount: menus.length,
+        itemCount: menus?.length,
         itemBuilder: (context, index) {
-          return _buildMenuItem(context, menus[index], asset);
+          return _buildMenuItem(context, menus?[index], asset);
         },
       ),
     );
   }
 
   Widget _buildMenuItem(
-      BuildContext context, dr.Category category, String asset) {
+      BuildContext context, dr.Category? category, String asset) {
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: ClipRRect(
@@ -166,7 +164,7 @@ class _RestaurantDetailPageState extends State<RestaurantDetailPage> {
               Padding(
                 padding: const EdgeInsets.only(left: 8.0),
                 child: Text(
-                  category.name,
+                  category?.name ?? '',
                   style: const TextStyle(
                       fontSize: 10, fontWeight: FontWeight.bold),
                 ),

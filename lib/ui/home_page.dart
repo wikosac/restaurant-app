@@ -123,7 +123,7 @@ class HomePage extends StatelessWidget {
     return InkWell(
       onTap: () {
         Navigator.pushNamed(context, RestaurantDetailPage.routeName,
-            arguments: restaurant);
+            arguments: restaurant.id);
       },
       child: Padding(
         padding: const EdgeInsets.all(8.0),
@@ -147,7 +147,7 @@ class HomePage extends StatelessWidget {
                 Hero(
                   tag: restaurant.pictureId,
                   child: Image.network(
-                    restaurant.pictureId,
+                    "https://restaurant-api.dicoding.dev/images/small/${restaurant.pictureId}",
                     height: 100,
                     fit: BoxFit.cover,
                     errorBuilder: (BuildContext context, Object error,

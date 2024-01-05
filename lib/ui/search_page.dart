@@ -89,7 +89,7 @@ class SearchPage extends StatelessWidget {
     return InkWell(
       onTap: () {
         Navigator.pushNamed(context, RestaurantDetailPage.routeName,
-            arguments: restaurant);
+            arguments: restaurant.id);
       },
       child: Container(
         padding: const EdgeInsets.all(16),
@@ -107,7 +107,7 @@ class SearchPage extends StatelessWidget {
                     child: Hero(
                       tag: restaurant.pictureId,
                       child: Image.network(
-                        restaurant.pictureId,
+                        "https://restaurant-api.dicoding.dev/images/small/${restaurant.pictureId}",
                         fit: BoxFit.cover,
                         width: 100,
                         height: 80,
