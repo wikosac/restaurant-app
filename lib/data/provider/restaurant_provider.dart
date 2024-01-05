@@ -13,12 +13,12 @@ class RestaurantProvider extends ChangeNotifier {
   }
 
   late RestaurantResult _restaurantResult;
-  DetailResult? _detailResult;
+  late DetailResult _detailResult;
   late ResultState _state;
   String _message = '';
 
   RestaurantResult get restaurantResult => _restaurantResult;
-  DetailResult? get detailResult => _detailResult;
+  DetailResult get detailResult => _detailResult;
   ResultState get state => _state;
   String get message => _message;
 
