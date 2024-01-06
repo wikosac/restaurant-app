@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:restaurant_app/common/styles.dart';
 import 'package:restaurant_app/data/api/api_service.dart';
 import 'package:restaurant_app/data/model/detail_result.dart' as dr;
 import 'package:restaurant_app/data/provider/detail_provider.dart';
@@ -23,7 +24,8 @@ class _RestaurantDetailPageState extends State<RestaurantDetailPage> {
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider(
-      create: (context) => DetailProvider(apiService: ApiService(), id: widget.id),
+      create: (context) =>
+          DetailProvider(apiService: ApiService(), id: widget.id),
       child: Scaffold(
         appBar: AppBar(),
         body: SingleChildScrollView(
@@ -66,22 +68,76 @@ class _RestaurantDetailPageState extends State<RestaurantDetailPage> {
                           ),
                         ),
                         const SizedBox(height: 8),
-                        Text('Lokasi: ${data.city}'),
                         Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            const Text('Rating: '),
-                            const Icon(
-                              Icons.star,
-                              color: Colors.yellow,
+                            Column(
+                              children: [
+                                ClipRRect(
+                                  borderRadius: BorderRadius.circular(36.0),
+                                  child: Container(
+                                    decoration: BoxDecoration(
+                                      color: lightColorScheme.onInverseSurface,
+                                    ),
+                                    padding: const EdgeInsets.all(12.0),
+                                    child: Padding(
+                                      padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                                      child: Row(
+                                        children: [
+                                          const Icon(
+                                            Icons.star,
+                                            size: 16,
+                                            color: Colors.yellow,
+                                          ),
+                                          const SizedBox(
+                                            width: 4,
+                                          ),
+                                          Text(
+                                            data.rating.toString(),
+                                            style: const TextStyle(fontSize: 12),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                                const SizedBox(height: 4,),
+                                const Text(
+                                  'Rating',
+                                  style: TextStyle(fontSize: 10),
+                                ),
+                              ],
                             ),
                             const SizedBox(
-                              width: 4,
+                              width: 16.0,
                             ),
-                            Text(data.rating.toString()),
+                            Column(
+                              children: [
+                                ClipRRect(
+                                  borderRadius: BorderRadius.circular(36.0),
+                                  child: Container(
+                                      decoration: BoxDecoration(
+                                          color: lightColorScheme.onInverseSurface),
+                                      padding: const EdgeInsets.all(12.0),
+                                      child: Padding(
+                                        padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                                        child: Text(
+                                          data.city,
+                                          style: const TextStyle(fontSize: 12),
+                                        ),
+                                      )),
+                                ),
+                                const SizedBox(height: 4,),
+                                const Text(
+                                  'Lokasi',
+                                  style: TextStyle(fontSize: 10),
+                                ),
+                              ],
+                            ),
                           ],
                         ),
                         const SizedBox(
-                          height: 8,
+                          height: 16,
                         ),
                         Text(
                           data.description,
@@ -97,8 +153,8 @@ class _RestaurantDetailPageState extends State<RestaurantDetailPage> {
                           },
                           child: Text(
                             isExpanded ? 'Lebih sedikit' : 'Selengkapnya',
-                            style:
-                            const TextStyle(color: Colors.grey, fontSize: 10),
+                            style: const TextStyle(
+                                color: Colors.grey, fontSize: 10),
                           ),
                         ),
                         const SizedBox(
@@ -108,7 +164,8 @@ class _RestaurantDetailPageState extends State<RestaurantDetailPage> {
                           'Makanan',
                           style: TextStyle(fontWeight: FontWeight.bold),
                         ),
-                        _buildList(context, data.menus.foods, 'assets/food.png'),
+                        _buildList(
+                            context, data.menus.foods, 'assets/food.png'),
                         const SizedBox(
                           height: 8,
                         ),
@@ -116,7 +173,8 @@ class _RestaurantDetailPageState extends State<RestaurantDetailPage> {
                           'Minuman',
                           style: TextStyle(fontWeight: FontWeight.bold),
                         ),
-                        _buildList(context, data.menus.drinks, 'assets/drink.png'),
+                        _buildList(
+                            context, data.menus.drinks, 'assets/drink.png'),
                       ],
                     ),
                   ),
@@ -139,7 +197,8 @@ class _RestaurantDetailPageState extends State<RestaurantDetailPage> {
     );
   }
 
-  Widget _buildList(BuildContext context, List<dr.Category> menus, String asset) {
+  Widget _buildList(
+      BuildContext context, List<dr.Category> menus, String asset) {
     return SizedBox(
       height: 136,
       child: ListView.builder(
@@ -153,7 +212,8 @@ class _RestaurantDetailPageState extends State<RestaurantDetailPage> {
     );
   }
 
-  Widget _buildMenuItem(BuildContext context, dr.Category category, String asset) {
+  Widget _buildMenuItem(
+      BuildContext context, dr.Category category, String asset) {
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: ClipRRect(
