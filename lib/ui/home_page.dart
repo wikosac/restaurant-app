@@ -102,8 +102,7 @@ class HomePage extends StatelessWidget {
             ),
           );
         } else if (state.state == ResultState.noData) {
-          return const SizedBox(
-              height: 120, child: Center(child: Text('Tidak ada data')));
+          return SizedBox(height: 120, child: Center(child: Text(state.message)));
         } else if (state.state == ResultState.error) {
           return Center(
             child: Material(

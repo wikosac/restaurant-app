@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:restaurant_app/common/styles.dart';
 import 'package:restaurant_app/data/api/api_service.dart';
 import 'package:restaurant_app/data/model/detail_result.dart' as dr;
+import 'package:restaurant_app/data/model/detail_result.dart';
 import 'package:restaurant_app/data/provider/detail_provider.dart';
 import 'package:restaurant_app/data/provider/restaurant_provider.dart';
 import 'package:restaurant_app/widget/shimmer_detail.dart';
@@ -34,158 +35,15 @@ class _RestaurantDetailPageState extends State<RestaurantDetailPage> {
               const ShimmerDetailPage();
             } else if (state.state == ResultState.hasData) {
               final data = state.detailResult.restaurant;
-              return Column(
-                children: [
-                  Hero(
-                      tag: data.pictureId,
-                      child: ClipRRect(
-                          borderRadius: const BorderRadius.vertical(
-                              bottom: Radius.circular(16)),
-                          child: Image.network(
-                            "https://restaurant-api.dicoding.dev/images/large/${data.pictureId}",
-                            fit: BoxFit.cover,
-                            errorBuilder: (BuildContext context, Object error,
-                                StackTrace? stackTrace) {
-                              // Show a placeholder image from a local asset when loading fails
-                              return Image.asset(
-                                'assets/restaurant.png',
-                                fit: BoxFit.cover,
-                                height: 180,
-                              );
-                            },
-                          ))),
-                  Padding(
-                    padding: const EdgeInsets.all(16),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          data.name,
-                          style: const TextStyle(
-                            color: Colors.black,
-                            fontWeight: FontWeight.bold,
-                            fontSize: 24,
-                          ),
-                        ),
-                        const SizedBox(height: 8),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Column(
-                              children: [
-                                ClipRRect(
-                                  borderRadius: BorderRadius.circular(36.0),
-                                  child: Container(
-                                    decoration: BoxDecoration(
-                                      color: lightColorScheme.onInverseSurface,
-                                    ),
-                                    padding: const EdgeInsets.all(12.0),
-                                    child: Padding(
-                                      padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                                      child: Row(
-                                        children: [
-                                          const Icon(
-                                            Icons.star,
-                                            size: 16,
-                                            color: Colors.yellow,
-                                          ),
-                                          const SizedBox(
-                                            width: 4,
-                                          ),
-                                          Text(
-                                            data.rating.toString(),
-                                            style: const TextStyle(fontSize: 12),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                                const SizedBox(height: 4,),
-                                const Text(
-                                  'Rating',
-                                  style: TextStyle(fontSize: 10),
-                                ),
-                              ],
-                            ),
-                            const SizedBox(
-                              width: 16.0,
-                            ),
-                            Column(
-                              children: [
-                                ClipRRect(
-                                  borderRadius: BorderRadius.circular(36.0),
-                                  child: Container(
-                                      decoration: BoxDecoration(
-                                          color: lightColorScheme.onInverseSurface),
-                                      padding: const EdgeInsets.all(12.0),
-                                      child: Padding(
-                                        padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                                        child: Text(
-                                          data.city,
-                                          style: const TextStyle(fontSize: 12),
-                                        ),
-                                      )),
-                                ),
-                                const SizedBox(height: 4,),
-                                const Text(
-                                  'Lokasi',
-                                  style: TextStyle(fontSize: 10),
-                                ),
-                              ],
-                            ),
-                          ],
-                        ),
-                        const SizedBox(
-                          height: 16,
-                        ),
-                        Text(
-                          data.description,
-                          style: const TextStyle(fontSize: 16),
-                          maxLines: isExpanded ? 30 : 2,
-                          overflow: TextOverflow.ellipsis,
-                        ),
-                        GestureDetector(
-                          onTap: () {
-                            setState(() {
-                              isExpanded = !isExpanded;
-                            });
-                          },
-                          child: Text(
-                            isExpanded ? 'Lebih sedikit' : 'Selengkapnya',
-                            style: const TextStyle(
-                                color: Colors.grey, fontSize: 10),
-                          ),
-                        ),
-                        const SizedBox(
-                          height: 16,
-                        ),
-                        const Text(
-                          'Makanan',
-                          style: TextStyle(fontWeight: FontWeight.bold),
-                        ),
-                        _buildList(
-                            context, data.menus.foods, 'assets/food.png'),
-                        const SizedBox(
-                          height: 8,
-                        ),
-                        const Text(
-                          'Minuman',
-                          style: TextStyle(fontWeight: FontWeight.bold),
-                        ),
-                        _buildList(
-                            context, data.menus.drinks, 'assets/drink.png'),
-                      ],
-                    ),
-                  ),
-                ],
-              );
+              return _buildColumn(context, data);
             } else if (state.state == ResultState.noData) {
-              return const SizedBox(
-                  height: 120, child: Center(child: Text('Tidak ada data')));
+              return SizedBox(
+                  height: 120, child: Center(child: Text(state.message)));
             } else if (state.state == ResultState.error) {
-              return Center(
-                child: Material(
+              return SizedBox(
+                width: MediaQuery.of(context).size.width,
+                height: MediaQuery.of(context).size.height - 180,
+                child: Center(
                   child: Text(state.message),
                 ),
               );
@@ -194,6 +52,184 @@ class _RestaurantDetailPageState extends State<RestaurantDetailPage> {
           }),
         ),
       ),
+    );
+  }
+
+  Widget _buildColumn(BuildContext context, dr.Restaurant data) {
+    return Column(
+      children: [
+        Hero(
+            tag: data.pictureId,
+            child: ClipRRect(
+                borderRadius:
+                    const BorderRadius.vertical(bottom: Radius.circular(16)),
+                child: Image.network(
+                  "https://restaurant-api.dicoding.dev/images/large/${data.pictureId}",
+                  fit: BoxFit.cover,
+                  errorBuilder: (BuildContext context, Object error,
+                      StackTrace? stackTrace) {
+                    return Image.asset(
+                      'assets/restaurant.png',
+                      fit: BoxFit.cover,
+                      height: 180,
+                    );
+                  },
+                ))),
+        Padding(
+          padding: const EdgeInsets.all(16),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                data.name,
+                style: const TextStyle(
+                  color: Colors.black,
+                  fontWeight: FontWeight.bold,
+                  fontSize: 24,
+                ),
+              ),
+              Text(
+                data.address,
+                style: const TextStyle(fontSize: 12),
+              ),
+              Row(
+                children: [
+                  for (int i = 0; i < data.categories.length; i++)
+                    Padding(
+                      padding: const EdgeInsets.only(right: 8.0),
+                      child: Text(
+                        data.categories[i].name,
+                        style: const TextStyle(fontSize: 10),
+                      ),
+                    ),
+                ],
+              ),
+              const SizedBox(height: 8),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Column(
+                    children: [
+                      ClipRRect(
+                        borderRadius: BorderRadius.circular(36.0),
+                        child: Container(
+                          decoration: BoxDecoration(
+                            color: lightColorScheme.onInverseSurface,
+                          ),
+                          padding: const EdgeInsets.all(12.0),
+                          child: Padding(
+                            padding:
+                                const EdgeInsets.symmetric(horizontal: 8.0),
+                            child: Row(
+                              children: [
+                                const Icon(
+                                  Icons.star,
+                                  size: 16,
+                                  color: Colors.yellow,
+                                ),
+                                const SizedBox(
+                                  width: 4,
+                                ),
+                                Text(
+                                  data.rating.toString(),
+                                  style: const TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(
+                        height: 4,
+                      ),
+                      const Text(
+                        'Rating',
+                        style: TextStyle(fontSize: 10),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(
+                    width: 16.0,
+                  ),
+                  Column(
+                    children: [
+                      ClipRRect(
+                        borderRadius: BorderRadius.circular(36.0),
+                        child: Container(
+                            decoration: BoxDecoration(
+                                color: lightColorScheme.onInverseSurface),
+                            padding: const EdgeInsets.all(12.0),
+                            child: Padding(
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 8.0),
+                              child: Text(
+                                data.city,
+                                style: const TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
+                              ),
+                            )),
+                      ),
+                      const SizedBox(
+                        height: 4,
+                      ),
+                      const Text(
+                        'Lokasi',
+                        style: TextStyle(fontSize: 10),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+              const SizedBox(
+                height: 16,
+              ),
+              Text(
+                data.description,
+                style: const TextStyle(fontSize: 16),
+                maxLines: isExpanded ? 30 : 2,
+                overflow: TextOverflow.ellipsis,
+              ),
+              GestureDetector(
+                onTap: () {
+                  setState(() {
+                    isExpanded = !isExpanded;
+                  });
+                },
+                child: Text(
+                  isExpanded ? 'Lebih sedikit' : 'Selengkapnya',
+                  style: const TextStyle(color: Colors.grey, fontSize: 10),
+                ),
+              ),
+              const SizedBox(
+                height: 16,
+              ),
+              const Text(
+                'Makanan',
+                style: TextStyle(fontWeight: FontWeight.bold),
+              ),
+              _buildList(context, data.menus.foods, 'assets/food.png'),
+              const SizedBox(
+                height: 8,
+              ),
+              const Text(
+                'Minuman',
+                style: TextStyle(fontWeight: FontWeight.bold),
+              ),
+              _buildList(context, data.menus.drinks, 'assets/drink.png'),
+              const SizedBox(
+                height: 16,
+              ),
+              const Text(
+                'Ulasan',
+                style: TextStyle(fontWeight: FontWeight.bold),
+              ),
+              const SizedBox(
+                height: 8,
+              ),
+              _buildReview(context, data.customerReviews)
+            ],
+          ),
+        ),
+      ],
     );
   }
 
@@ -260,6 +296,55 @@ class _RestaurantDetailPageState extends State<RestaurantDetailPage> {
           ),
         ),
       ),
+    );
+  }
+
+  Widget _buildReview(BuildContext context, List<CustomerReview> reviews) {
+    return SizedBox(
+      height: 136,
+      child: ListView.builder(
+        itemExtent: 180,
+        scrollDirection: Axis.vertical,
+        itemCount: reviews.length,
+        itemBuilder: (context, index) {
+          return _buildReviewItem(context, reviews[index]);
+        },
+      ),
+    );
+  }
+
+  Widget _buildReviewItem(BuildContext context, dr.CustomerReview review) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Row(
+          children: [
+            Padding(
+              padding: const EdgeInsets.only(right: 8.0),
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(24),
+                child: Container(
+                    color: lightColorScheme.primaryContainer,
+                    padding: const EdgeInsets.all(6),
+                    child: const Icon(
+                      Icons.person,
+                    )),
+              ),
+            ),
+            Text(review.name, style: const TextStyle(fontWeight: FontWeight.bold),)
+          ],
+        ),
+        Padding(
+          padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 44),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(review.review),
+              Text(review.date, style: const TextStyle(fontSize: 10),),
+            ],
+          ),
+        )
+      ],
     );
   }
 }

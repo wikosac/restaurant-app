@@ -61,7 +61,7 @@ class SearchPage extends StatelessWidget {
     return Consumer<RestaurantProvider>(
       builder: (context, state, _) {
         if (state.state == ResultState.loading) {
-          return SizedBox(
+          SizedBox(
             height: 1000,
             child: ListView.builder(
                 itemCount: 10,
