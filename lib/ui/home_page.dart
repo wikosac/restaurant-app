@@ -81,7 +81,7 @@ class HomePage extends StatelessWidget {
           SizedBox(
             height: 120,
             child: ListView.builder(
-                itemCount: 3,
+                itemCount: 5,
                 scrollDirection: Axis.horizontal,
                 itemBuilder: (context, index) {
                   return const ShimmerCard();
@@ -112,12 +112,12 @@ class HomePage extends StatelessWidget {
           );
         }
         return SizedBox(
-          height: 120,
+          height: 180,
           child: ListView.builder(
-              itemCount: 3,
+              itemCount: 5,
               scrollDirection: Axis.horizontal,
               itemBuilder: (context, index) {
-                return const ShimmerCard();
+                return const Expanded(child: ShimmerCard());
               }),
         );
       },
