@@ -16,7 +16,9 @@ class RestaurantProvider extends ChangeNotifier {
   String _message = '';
 
   RestaurantResult get restaurantResult => _restaurantResult;
+
   ResultState get state => _state;
+
   String get message => _message;
 
   Future<dynamic> _fetchRestaurant() async {
@@ -37,6 +39,30 @@ class RestaurantProvider extends ChangeNotifier {
       _state = ResultState.error;
       notifyListeners();
       return _message = 'Koneksi error';
+    }
+  }
+
+  ResultState? _searchState;
+
+  List<Restaurant> _filteredRestaurants = [];
+
+  ResultState? get searchState => _searchState;
+
+  List<Restaurant> get filteredRestaurants => _filteredRestaurants;
+
+
+  void searchRestaurantsByKeyword(String keyword) {
+    _filteredRestaurants = _restaurantResult.restaurants
+        .where((item) => item.name.toLowerCase().contains(keyword.toLowerCase()))
+        .toList();
+
+    if (_filteredRestaurants.isEmpty) {
+      _searchState = ResultState.noData;
+      _message = 'Tidak ditemukan restoran yang cocok';
+      notifyListeners();
+    } else {
+      _searchState = ResultState.hasData;
+      notifyListeners();
     }
   }
 }

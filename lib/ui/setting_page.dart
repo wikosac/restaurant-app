@@ -12,32 +12,37 @@ class SettingPage extends StatelessWidget {
             style: TextStyle(fontWeight: FontWeight.bold),
           )
       ),
-      body: Center(
-        child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              ClipRRect(
-                borderRadius: BorderRadius.circular(84.0),
-                child: Image.asset(
-                  'assets/pass.jpg',
-                  fit: BoxFit.cover,
-                  width: 150,
-                  height: 150,
-                ),
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            ClipRRect(
+              borderRadius: BorderRadius.circular(84.0),
+              child: Image.asset(
+                'assets/pass.jpg',
+                fit: BoxFit.cover,
+                width: 72,
+                height: 72,
               ),
-              const SizedBox(
-                height: 16.0,
+            ),
+            const SizedBox(width: 16.0,),
+            const SizedBox(
+              height: 72,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    "Dwiko Indrawansyah",
+                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16.0),
+                  ),
+                  Text("wesibrani@gmail.com", style: TextStyle(fontSize: 12.0),)
+                ]
               ),
-              const Text(
-                "Dwiko Indrawansyah",
-                style: TextStyle(fontWeight: FontWeight.bold),
-              ),
-              const SizedBox(
-                height: 16.0,
-              ),
-              const Text("wesibrani@gmail.com")
-            ]),
+            ),
+          ]
+        ),
       ),
     );
   }

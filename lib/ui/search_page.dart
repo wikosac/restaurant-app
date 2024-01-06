@@ -7,7 +7,9 @@ import 'package:restaurant_app/ui/detail_page.dart';
 import 'package:restaurant_app/widget/shimmer.dart';
 
 class SearchPage extends StatelessWidget {
-  const SearchPage({super.key});
+  SearchPage({super.key});
+
+  final TextEditingController controller = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -15,27 +17,36 @@ class SearchPage extends StatelessWidget {
       child: Scaffold(
         appBar: AppBar(
           surfaceTintColor: Colors.white,
-          title: TextField(
-            onTap: () {
-              // Display a Snackbar
-              const snackBar = SnackBar(
-                content: Text('Fitur ini segera hadir!'),
-                duration: Duration(seconds: 3), // Adjust the duration as needed
+          title: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Consumer<RestaurantProvider>(builder: (context, provider, _) {
+              return TextField(
+                controller: controller,
+                onChanged: (text) {
+                  provider.searchRestaurantsByKeyword(text);
+                },
+                decoration: InputDecoration(
+                    hintText: 'Cari restaurant..',
+                    hintStyle: const TextStyle(
+                        fontSize: 12, fontWeight: FontWeight.w300),
+                    contentPadding:
+                        const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+                    prefixIcon: const Icon(Icons.search),
+                    suffixIcon: controller.text.isNotEmpty
+                        ? GestureDetector(
+                            onTap: () {
+                              controller.clear();
+                              provider.searchRestaurantsByKeyword('');
+                            },
+                            child: const Icon(Icons.clear),
+                          )
+                        : null,
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(36),
+                    )),
+                textInputAction: TextInputAction.search,
               );
-
-              // Find the Scaffold in the widget tree and show the Snackbar
-              ScaffoldMessenger.of(context).showSnackBar(snackBar);
-            },
-            decoration: InputDecoration(
-                hintText: 'Cari restaurant..',
-                hintStyle:
-                    const TextStyle(fontSize: 12, fontWeight: FontWeight.w300),
-                contentPadding:
-                    const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
-                prefixIcon: const Icon(Icons.search),
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(36),
-                )),
+            }),
           ),
         ),
         body: Padding(
@@ -59,7 +70,20 @@ class SearchPage extends StatelessWidget {
                 }),
           );
         } else if (state.state == ResultState.hasData) {
-          final data = state.restaurantResult.restaurants;
+          final data = (state.filteredRestaurants.isEmpty &&
+          state.searchState != ResultState.noData)
+              ? state.restaurantResult.restaurants
+              : state.filteredRestaurants;
+          if (state.searchState == ResultState.noData) {
+            return Column(
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.only(top: 24.0),
+                    child: Center(child: Text(state.message)),
+                  )
+                ]
+            );
+          }
           return ListView.builder(
             itemCount: data.length,
             itemBuilder: (context, index) {
@@ -67,8 +91,7 @@ class SearchPage extends StatelessWidget {
             },
           );
         } else if (state.state == ResultState.noData) {
-          return const SizedBox(
-              height: 120, child: Center(child: Text('Tidak ada data')));
+          return SizedBox(height: 120, child: Center(child: Text(state.message)));
         } else if (state.state == ResultState.error) {
           return Center(
             child: Material(
@@ -76,9 +99,9 @@ class SearchPage extends StatelessWidget {
             ),
           );
         }
-        return const Center(
+        return Center(
           child: Material(
-            child: Text(''),
+            child: Text(state.message),
           ),
         );
       },

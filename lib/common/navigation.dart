@@ -57,7 +57,7 @@ class _NavigationState extends State<Navigation> {
     ),
     ChangeNotifierProvider<RestaurantProvider>(
       create: (_) => RestaurantProvider(apiService: ApiService()),
-      child: const SearchPage(),
+      child: SearchPage(),
     ),
     const SettingPage()
   ];
