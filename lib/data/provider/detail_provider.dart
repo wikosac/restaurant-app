@@ -39,4 +39,27 @@ class DetailProvider extends ChangeNotifier {
       return _message = 'Koneksi error';
     }
   }
+
+  late ResultState _reviewState;
+  ResultState get reviewState => _reviewState;
+
+  void postReview({required String id, required String name, required String review}) async {
+    try {
+      _reviewState = ResultState.loading;
+      notifyListeners();
+      final result = await apiService.postReview(id: id, name: name, review: review);
+      if (result.error == true) {
+        _reviewState = ResultState.noData;
+        notifyListeners();
+      } else {
+        _reviewState = ResultState.hasData;
+        notifyListeners();
+      }
+      _message = result.message;
+    } catch (e) {
+      _reviewState = ResultState.error;
+      notifyListeners();
+      _message = 'Koneksi error';
+    }
+  }
 }

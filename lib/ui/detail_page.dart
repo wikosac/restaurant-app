@@ -6,6 +6,7 @@ import 'package:restaurant_app/data/model/detail_result.dart' as dr;
 import 'package:restaurant_app/data/model/detail_result.dart';
 import 'package:restaurant_app/data/provider/detail_provider.dart';
 import 'package:restaurant_app/data/provider/restaurant_provider.dart';
+import 'package:restaurant_app/widget/bottom_sheet.dart';
 import 'package:restaurant_app/widget/shimmer_detail.dart';
 
 class RestaurantDetailPage extends StatefulWidget {
@@ -218,9 +219,19 @@ class _RestaurantDetailPageState extends State<RestaurantDetailPage> {
               const SizedBox(
                 height: 16,
               ),
-              const Text(
-                'Ulasan',
-                style: TextStyle(fontWeight: FontWeight.bold),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  const Text('Ulasan', style: TextStyle(fontWeight: FontWeight.bold),),
+                  Consumer<DetailProvider>(builder: (context, provider, _) {
+                    return IconButton(
+                      icon: const Icon(Icons.add),
+                      onPressed: () {
+                        showBottomSheetDialog(context, 'title', 'content');
+                      },
+                    );
+                  }),
+                ],
               ),
               const SizedBox(
                 height: 8,
