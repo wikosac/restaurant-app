@@ -23,7 +23,7 @@ class SearchPage extends StatelessWidget {
               return TextField(
                 controller: controller,
                 onChanged: (text) {
-                  provider.searchRestaurantsByKeyword(text);
+                  provider.searchRestaurant(query: text.toString());
                 },
                 decoration: InputDecoration(
                     hintText: 'Cari restaurant..',
@@ -36,7 +36,7 @@ class SearchPage extends StatelessWidget {
                         ? GestureDetector(
                             onTap: () {
                               controller.clear();
-                              provider.searchRestaurantsByKeyword('');
+                              provider.searchRestaurant(query: '');
                             },
                             child: const Icon(Icons.clear),
                           )
@@ -70,10 +70,7 @@ class SearchPage extends StatelessWidget {
                 }),
           );
         } else if (state.state == ResultState.hasData) {
-          final data = (state.filteredRestaurants.isEmpty &&
-          state.searchState != ResultState.noData)
-              ? state.restaurantResult.restaurants
-              : state.filteredRestaurants;
+          final data = state.restaurantList;
           if (state.searchState == ResultState.noData) {
             return Column(
                 children: [

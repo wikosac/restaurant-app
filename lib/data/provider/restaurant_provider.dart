@@ -33,7 +33,8 @@ class RestaurantProvider extends ChangeNotifier {
       } else {
         _state = ResultState.hasData;
         notifyListeners();
-        return _restaurantResult = restaurant;
+        _restaurantResult = restaurant;
+        return _restaurantList = restaurant.restaurants;
       }
     } catch (e) {
       _state = ResultState.error;
@@ -43,26 +44,28 @@ class RestaurantProvider extends ChangeNotifier {
   }
 
   ResultState? _searchState;
-
-  List<Restaurant> _filteredRestaurants = [];
+  List<Restaurant> _restaurantList = [];
 
   ResultState? get searchState => _searchState;
 
-  List<Restaurant> get filteredRestaurants => _filteredRestaurants;
+  List<Restaurant> get restaurantList => _restaurantList;
 
-
-  void searchRestaurantsByKeyword(String keyword) {
-    _filteredRestaurants = _restaurantResult.restaurants
-        .where((item) => item.name.toLowerCase().contains(keyword.toLowerCase()))
-        .toList();
-
-    if (_filteredRestaurants.isEmpty) {
-      _searchState = ResultState.noData;
-      _message = 'Tidak ditemukan restoran yang cocok';
+  Future<dynamic> searchRestaurant({required String query}) async {
+    try {
+      final result = await apiService.searchRestaurant(query: query);
+      if (result.restaurants.isEmpty) {
+        _searchState = ResultState.noData;
+        notifyListeners();
+        return _message = 'Tidak ditemukan restoran yang cocok';
+      } else {
+        _searchState = ResultState.hasData;
+        notifyListeners();
+        return _restaurantList = result.restaurants;
+      }
+    } catch (e) {
+      _searchState = ResultState.error;
       notifyListeners();
-    } else {
-      _searchState = ResultState.hasData;
-      notifyListeners();
+      return _message = 'Koneksi error';
     }
   }
 }
