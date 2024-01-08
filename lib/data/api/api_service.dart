@@ -51,8 +51,7 @@ class ApiService {
         body: jsonEncode(reviewData),
       );
       print('response: ${response.body}');
-
-      ReviewResult responseData = jsonDecode(response.body);
+      ReviewResult responseData = ReviewResult.fromJson(jsonDecode(response.body) as Map<String, dynamic>);
       return responseData;
     } catch (error) {
       print('error: $error');

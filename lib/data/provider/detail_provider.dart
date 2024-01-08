@@ -43,8 +43,6 @@ class DetailProvider extends ChangeNotifier {
   late ResultState _reviewState;
   ResultState get reviewState => _reviewState;
 
-  bool error = true;
-
   void postReview({required String id, required String name, required String review}) async {
     try {
       _reviewState = ResultState.loading;
@@ -58,13 +56,12 @@ class DetailProvider extends ChangeNotifier {
         notifyListeners();
       }
       _message = result.message;
-      error = result.error;
-      print(message);
+      notifyListeners();
+      print('dmsg: $message');
     } catch (e) {
       _reviewState = ResultState.error;
-      notifyListeners();
       _message = 'Koneksi error';
-      print(message);
+      notifyListeners();
     }
   }
 }

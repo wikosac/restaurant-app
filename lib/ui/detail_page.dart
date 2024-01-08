@@ -230,16 +230,15 @@ class _RestaurantDetailPageState extends State<RestaurantDetailPage> {
                     style: TextStyle(fontWeight: FontWeight.bold),
                   ),
                   Consumer<DetailProvider>(builder: (context, provider, _) {
-                    final msg = provider.message.isEmpty
-                        ? 'Isi bagian ulasan'
-                        : provider.message;
                     return IconButton(
                       icon: const Icon(Icons.add),
                       onPressed: () {
                         showBottomSheetDialog(context, (review) {
+                          var msg = 'Ulasan tidak boleh kosong';
                           if (review.isNotEmpty) {
                             provider.postReview(
                                 id: widget.id, name: 'Anonim', review: review);
+                            msg = 'Berhasil menambah ulasan';
                           }
                           var snackBar = SnackBar(
                             content: Text(msg),
