@@ -50,10 +50,12 @@ class ApiService {
         headers: {'Content-Type': 'application/json'},
         body: jsonEncode(reviewData),
       );
+      print('response: ${response.body}');
 
       ReviewResult responseData = jsonDecode(response.body);
       return responseData;
     } catch (error) {
+      print('error: $error');
       return ReviewResult(
           error: true,
           message: 'Gagal menambah ulasan',

@@ -133,7 +133,9 @@ class _RestaurantDetailPageState extends State<RestaurantDetailPage> {
                                 ),
                                 Text(
                                   data.rating.toString(),
-                                  style: const TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
+                                  style: const TextStyle(
+                                      fontSize: 12,
+                                      fontWeight: FontWeight.bold),
                                 ),
                               ],
                             ),
@@ -165,7 +167,8 @@ class _RestaurantDetailPageState extends State<RestaurantDetailPage> {
                                   const EdgeInsets.symmetric(horizontal: 8.0),
                               child: Text(
                                 data.city,
-                                style: const TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
+                                style: const TextStyle(
+                                    fontSize: 12, fontWeight: FontWeight.bold),
                               ),
                             )),
                       ),
@@ -222,12 +225,28 @@ class _RestaurantDetailPageState extends State<RestaurantDetailPage> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  const Text('Ulasan', style: TextStyle(fontWeight: FontWeight.bold),),
+                  const Text(
+                    'Ulasan',
+                    style: TextStyle(fontWeight: FontWeight.bold),
+                  ),
                   Consumer<DetailProvider>(builder: (context, provider, _) {
+                    final msg = provider.message.isEmpty
+                        ? 'Isi bagian ulasan'
+                        : provider.message;
                     return IconButton(
                       icon: const Icon(Icons.add),
                       onPressed: () {
-                        showBottomSheetDialog(context, 'title', 'content');
+                        showBottomSheetDialog(context, (review) {
+                          if (review.isNotEmpty) {
+                            provider.postReview(
+                                id: widget.id, name: 'Anonim', review: review);
+                          }
+                          var snackBar = SnackBar(
+                            content: Text(msg),
+                            duration: const Duration(seconds: 3),
+                          );
+                          ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                        });
                       },
                     );
                   }),
@@ -236,7 +255,9 @@ class _RestaurantDetailPageState extends State<RestaurantDetailPage> {
               const SizedBox(
                 height: 8,
               ),
-              _buildReview(context, data.customerReviews)
+              Consumer<DetailProvider>(builder: (context, provider, _) {
+                return _buildReview(context, provider.detailResult.restaurant.customerReviews);
+              })
             ],
           ),
         ),
@@ -312,9 +333,9 @@ class _RestaurantDetailPageState extends State<RestaurantDetailPage> {
 
   Widget _buildReview(BuildContext context, List<CustomerReview> reviews) {
     return SizedBox(
-      height: 136,
+      height: (100 * reviews.length).toDouble(),
       child: ListView.builder(
-        itemExtent: 180,
+        itemExtent: 100,
         scrollDirection: Axis.vertical,
         itemCount: reviews.length,
         itemBuilder: (context, index) {
@@ -342,7 +363,10 @@ class _RestaurantDetailPageState extends State<RestaurantDetailPage> {
                     )),
               ),
             ),
-            Text(review.name, style: const TextStyle(fontWeight: FontWeight.bold),)
+            Text(
+              review.name,
+              style: const TextStyle(fontWeight: FontWeight.bold),
+            )
           ],
         ),
         Padding(
@@ -350,8 +374,11 @@ class _RestaurantDetailPageState extends State<RestaurantDetailPage> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(review.review),
-              Text(review.date, style: const TextStyle(fontSize: 10),),
+              Text(review.review, overflow: TextOverflow.ellipsis,),
+              Text(
+                review.date,
+                style: const TextStyle(fontSize: 10),
+              ),
             ],
           ),
         )
