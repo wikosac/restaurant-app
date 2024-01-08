@@ -57,7 +57,6 @@ class DetailProvider extends ChangeNotifier {
       }
       _message = result.message;
       notifyListeners();
-      print('dmsg: $message');
     } catch (e) {
       _reviewState = ResultState.error;
       _message = 'Koneksi error';

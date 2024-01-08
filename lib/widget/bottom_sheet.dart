@@ -8,6 +8,9 @@ void showBottomSheetDialog(BuildContext context, void Function(String text) onSu
     isScrollControlled: true,
     builder: (BuildContext context) {
       return SingleChildScrollView(
+        padding: EdgeInsets.only(
+          bottom: MediaQuery.of(context).viewInsets.bottom,
+        ),
         child: Container(
           width: MediaQuery.of(context).size.width,
           padding: const EdgeInsets.all(16.0),
