@@ -9,7 +9,7 @@ import 'package:restaurant_app/data/provider/restaurant_provider.dart';
 import 'package:restaurant_app/widget/bottom_sheet.dart';
 import 'package:restaurant_app/widget/shimmer_detail.dart';
 
-class RestaurantDetailPage extends StatefulWidget {
+class RestaurantDetailPage extends StatelessWidget {
   static const routeName = '/restaurant_detail';
 
   final String id;
@@ -17,15 +17,10 @@ class RestaurantDetailPage extends StatefulWidget {
   const RestaurantDetailPage({Key? key, required this.id}) : super(key: key);
 
   @override
-  State<RestaurantDetailPage> createState() => _RestaurantDetailPageState();
-}
-
-class _RestaurantDetailPageState extends State<RestaurantDetailPage> {
-  @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider(
       create: (context) =>
-          DetailProvider(apiService: ApiService(), id: widget.id),
+          DetailProvider(apiService: ApiService(), id: id),
       child: Scaffold(
         appBar: AppBar(),
         body: SingleChildScrollView(
@@ -33,8 +28,7 @@ class _RestaurantDetailPageState extends State<RestaurantDetailPage> {
             if (state.state == ResultState.loading) {
               return const ShimmerDetailPage();
             } else if (state.state == ResultState.hasData) {
-              final data = state.detailResult.restaurant;
-              return _buildColumn(context, data, state);
+              return _buildColumn(context, state);
             } else if (state.state == ResultState.noData) {
               return SizedBox(
                   height: 120, child: Center(child: Text(state.message)));
@@ -54,7 +48,8 @@ class _RestaurantDetailPageState extends State<RestaurantDetailPage> {
     );
   }
 
-  Widget _buildColumn(BuildContext context, dr.Restaurant data, DetailProvider provider) {
+  Widget _buildColumn(BuildContext context, DetailProvider provider) {
+    final data = provider.detailResult.restaurant;
     return Column(
       children: [
         Hero(
@@ -233,7 +228,7 @@ class _RestaurantDetailPageState extends State<RestaurantDetailPage> {
                           var msg = 'Ulasan tidak boleh kosong';
                           if (review.isNotEmpty) {
                             provider.postReview(
-                                id: widget.id, name: 'Anonim', review: review);
+                                id: id, name: 'Anonim', review: review);
                             msg = 'Berhasil menambah ulasan';
                           }
                           var snackBar = SnackBar(
