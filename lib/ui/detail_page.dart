@@ -33,7 +33,7 @@ class _RestaurantDetailPageState extends State<RestaurantDetailPage> {
         body: SingleChildScrollView(
           child: Consumer<DetailProvider>(builder: (context, state, _) {
             if (state.state == ResultState.loading) {
-              const ShimmerDetailPage();
+              return const ShimmerDetailPage();
             } else if (state.state == ResultState.hasData) {
               final data = state.detailResult.restaurant;
               return _buildColumn(context, data);

@@ -78,10 +78,11 @@ class HomePage extends StatelessWidget {
     return Consumer<RestaurantProvider>(
       builder: (context, state, _) {
         if (state.state == ResultState.loading) {
-          SizedBox(
-            height: 120,
+          return SizedBox(
+            height: 192,
             child: ListView.builder(
                 itemCount: 5,
+                itemExtent: 150,
                 scrollDirection: Axis.horizontal,
                 itemBuilder: (context, index) {
                   return const ShimmerCard();

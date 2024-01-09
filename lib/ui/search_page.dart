@@ -59,9 +59,9 @@ class SearchPage extends StatelessWidget {
 
   Widget _buildList(BuildContext context) {
     return Consumer<RestaurantProvider>(
-      builder: (context, state, _) {
-        if (state.state == ResultState.loading) {
-          SizedBox(
+      builder: (context, provider, _) {
+        if (provider.state == ResultState.loading) {
+          return SizedBox(
             height: 1000,
             child: ListView.builder(
                 itemCount: 10,
@@ -69,16 +69,29 @@ class SearchPage extends StatelessWidget {
                   return const MyShimmer();
                 }),
           );
-        } else if (state.state == ResultState.hasData) {
-          final data = state.restaurantList;
-          if (state.searchState == ResultState.noData) {
-            return Column(
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.only(top: 24.0),
-                    child: Center(child: Text(state.message)),
-                  )
-                ]
+        } else if (provider.state == ResultState.hasData) {
+          final data = provider.restaurantList;
+          if (provider.searchState == ResultState.loading) {
+            return SizedBox(
+              height: 1000,
+              child: ListView.builder(
+                  itemCount: 10,
+                  itemBuilder: (context, index) {
+                    return const MyShimmer();
+                  }),
+            );
+          } else if (provider.searchState == ResultState.noData) {
+            return Column(children: [
+              Padding(
+                padding: const EdgeInsets.only(top: 24.0),
+                child: Center(child: Text(provider.message)),
+              )
+            ]);
+          } else if (provider.searchState == ResultState.error) {
+            return Center(
+              child: Material(
+                child: Text(provider.message),
+              ),
             );
           }
           return ListView.builder(
@@ -87,18 +100,19 @@ class SearchPage extends StatelessWidget {
               return _buildListItem(context, data[index]);
             },
           );
-        } else if (state.state == ResultState.noData) {
-          return SizedBox(height: 120, child: Center(child: Text(state.message)));
-        } else if (state.state == ResultState.error) {
+        } else if (provider.state == ResultState.noData) {
+          return SizedBox(
+              height: 120, child: Center(child: Text(provider.message)));
+        } else if (provider.state == ResultState.error) {
           return Center(
             child: Material(
-              child: Text(state.message),
+              child: Text(provider.message),
             ),
           );
         }
         return Center(
           child: Material(
-            child: Text(state.message),
+            child: Text(provider.message),
           ),
         );
       },
