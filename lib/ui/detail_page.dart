@@ -21,8 +21,6 @@ class RestaurantDetailPage extends StatefulWidget {
 }
 
 class _RestaurantDetailPageState extends State<RestaurantDetailPage> {
-  bool isExpanded = false;
-
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider(
@@ -36,7 +34,7 @@ class _RestaurantDetailPageState extends State<RestaurantDetailPage> {
               return const ShimmerDetailPage();
             } else if (state.state == ResultState.hasData) {
               final data = state.detailResult.restaurant;
-              return _buildColumn(context, data);
+              return _buildColumn(context, data, state);
             } else if (state.state == ResultState.noData) {
               return SizedBox(
                   height: 120, child: Center(child: Text(state.message)));
@@ -56,7 +54,7 @@ class _RestaurantDetailPageState extends State<RestaurantDetailPage> {
     );
   }
 
-  Widget _buildColumn(BuildContext context, dr.Restaurant data) {
+  Widget _buildColumn(BuildContext context, dr.Restaurant data, DetailProvider provider) {
     return Column(
       children: [
         Hero(
@@ -189,17 +187,15 @@ class _RestaurantDetailPageState extends State<RestaurantDetailPage> {
               Text(
                 data.description,
                 style: const TextStyle(fontSize: 16),
-                maxLines: isExpanded ? 30 : 2,
+                maxLines: provider.isExpanded ? 30 : 2,
                 overflow: TextOverflow.ellipsis,
               ),
               GestureDetector(
                 onTap: () {
-                  setState(() {
-                    isExpanded = !isExpanded;
-                  });
+                  provider.setExpanded();
                 },
                 child: Text(
-                  isExpanded ? 'Lebih sedikit' : 'Selengkapnya',
+                  provider.isExpanded ? 'Lebih sedikit' : 'Selengkapnya',
                   style: const TextStyle(color: Colors.grey, fontSize: 10),
                 ),
               ),

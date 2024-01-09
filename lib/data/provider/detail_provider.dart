@@ -11,6 +11,13 @@ class DetailProvider extends ChangeNotifier {
     _fetchDetail(id: id);
   }
 
+  bool isExpanded = false;
+
+  void setExpanded() {
+    isExpanded = !isExpanded;
+    notifyListeners();
+  }
+
   late DetailResult _detailResult;
   late ResultState _state;
   String _message = '';
