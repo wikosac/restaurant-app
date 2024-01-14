@@ -77,8 +77,8 @@ class HomePage extends StatelessWidget {
 
   Widget _buildList(BuildContext context) {
     return Consumer<RestaurantProvider>(
-      builder: (context, state, _) {
-        if (state.state == ResultState.loading) {
+      builder: (context, provider, _) {
+        if (provider.state == ResultState.loading) {
           return SizedBox(
             height: 192,
             child: ListView.builder(
@@ -89,8 +89,8 @@ class HomePage extends StatelessWidget {
                   return const ShimmerCard();
                 }),
           );
-        } else if (state.state == ResultState.hasData) {
-          final data = state.restaurantResult.restaurants;
+        } else if (provider.state == ResultState.hasData) {
+          final data = provider.restaurantResult.restaurants;
           return SizedBox(
             height: 192,
             child: ListView.builder(
@@ -103,12 +103,12 @@ class HomePage extends StatelessWidget {
               },
             ),
           );
-        } else if (state.state == ResultState.noData) {
-          return SizedBox(height: 120, child: Center(child: Text(state.message)));
-        } else if (state.state == ResultState.error) {
+        } else if (provider.state == ResultState.noData) {
+          return SizedBox(height: 120, child: Center(child: Text(provider.message)));
+        } else if (provider.state == ResultState.error) {
           return Center(
             child: Material(
-              child: Text(state.message),
+              child: Text(provider.message),
             ),
           );
         }

@@ -1,7 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-import 'package:restaurant_app/data/api/api_service.dart';
-import 'package:restaurant_app/data/provider/restaurant_provider.dart';
 import 'package:restaurant_app/ui/home_page.dart';
 import 'package:restaurant_app/ui/search_page.dart';
 import 'package:restaurant_app/ui/setting_page.dart';
@@ -51,14 +48,8 @@ class _NavigationState extends State<Navigation> {
   ];
 
   final List<Widget> _listWidget = [
-    ChangeNotifierProvider<RestaurantProvider>(
-      create: (_) => RestaurantProvider(apiService: ApiService()),
-      child: const HomePage(),
-    ),
-    ChangeNotifierProvider<RestaurantProvider>(
-      create: (_) => RestaurantProvider(apiService: ApiService()),
-      child: SearchPage(),
-    ),
+    const HomePage(),
+    SearchPage(),
     const SettingPage()
   ];
 }

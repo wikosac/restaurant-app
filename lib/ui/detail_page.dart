@@ -60,13 +60,16 @@ class RestaurantDetailPage extends StatelessWidget {
                 child: Image.network(
                   "https://restaurant-api.dicoding.dev/images/large/${data.pictureId}",
                   fit: BoxFit.cover,
-                  errorBuilder: (BuildContext context, Object error,
-                      StackTrace? stackTrace) {
-                    return Image.asset(
-                      'assets/restaurant.png',
-                      fit: BoxFit.cover,
-                      height: 180,
-                    );
+                  loadingBuilder: (context, child, loadingProgress) {
+                    if (loadingProgress == null) {
+                      return child;
+                    } else {
+                      return Image.asset(
+                        'assets/restaurant.png',
+                        fit: BoxFit.cover,
+                        height: 180,
+                      );
+                    }
                   },
                 ))),
         Padding(
