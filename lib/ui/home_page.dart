@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:restaurant_app/common/styles.dart';
 import 'package:restaurant_app/data/model/restaurant_result.dart';
 import 'package:restaurant_app/data/provider/restaurant_provider.dart';
+import 'package:restaurant_app/utils/result_state.dart';
 import 'package:restaurant_app/widget/shimmer_card.dart';
 
 import 'detail_page.dart';

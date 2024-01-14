@@ -1,7 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:restaurant_app/data/api/api_service.dart';
 import 'package:restaurant_app/data/model/detail_result.dart';
-import 'package:restaurant_app/data/provider/restaurant_provider.dart';
+import 'package:restaurant_app/utils/result_state.dart';
 
 class DetailProvider extends ChangeNotifier {
   final ApiService apiService;
@@ -61,6 +61,7 @@ class DetailProvider extends ChangeNotifier {
       } else {
         _reviewState = ResultState.hasData;
         notifyListeners();
+        _fetchDetail(id: id);
       }
       _message = result.message;
       notifyListeners();

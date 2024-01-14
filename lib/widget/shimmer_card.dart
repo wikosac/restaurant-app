@@ -25,7 +25,6 @@ class ShimmerCard extends StatelessWidget {
               const SizedBox(
                 height: 8,
               ),
-              // Shimmer effect for the rating
               Container(
                 height: 14,
                 width: 60,
@@ -34,7 +33,6 @@ class ShimmerCard extends StatelessWidget {
               const SizedBox(
                 height: 8,
               ),
-              // Shimmer effect for the rating
               Container(
                 height: 14,
                 width: 60,
