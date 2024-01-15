@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:restaurant_app/common/navigation.dart';
 import 'package:restaurant_app/common/styles.dart';
 import 'package:restaurant_app/data/model/restaurant_result.dart';
 import 'package:restaurant_app/data/provider/restaurant_provider.dart';
@@ -104,7 +105,8 @@ class HomePage extends StatelessWidget {
             ),
           );
         } else if (provider.state == ResultState.noData) {
-          return SizedBox(height: 120, child: Center(child: Text(provider.message)));
+          return SizedBox(
+              height: 120, child: Center(child: Text(provider.message)));
         } else if (provider.state == ResultState.error) {
           return Center(
             child: Material(
@@ -127,10 +129,8 @@ class HomePage extends StatelessWidget {
 
   Widget _buildCard(BuildContext context, Restaurant restaurant) {
     return InkWell(
-      onTap: () {
-        Navigator.pushNamed(context, RestaurantDetailPage.routeName,
-            arguments: restaurant.id);
-      },
+      onTap: () => Navigation.intentWithData(
+          RestaurantDetailPage.routeName, restaurant.id),
       child: Padding(
         padding: const EdgeInsets.all(8.0),
         child: ClipRRect(

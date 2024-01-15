@@ -1,4 +1,9 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:restaurant_app/data/provider/preferences_provider.dart';
+import 'package:restaurant_app/data/provider/scheduling_provider.dart';
 import 'package:restaurant_app/ui/favorite_page.dart';
 
 class SettingPage extends StatelessWidget {
@@ -46,7 +51,32 @@ class SettingPage extends StatelessWidget {
                 ),
               ]
             ),
-            const SizedBox(height: 48,),
+            const SizedBox(height: 36,),
+            Material(
+              child: ListTile(
+                title: const Text('Rekomendasi Restoran'),
+                trailing: Consumer2<PreferencesProvider, SchedulingProvider>(
+                  builder: (context, pref, scheduled, _) {
+                    return Switch.adaptive(
+                      value: pref.isReminderActive,
+                      onChanged: (value) async {
+                        if (Platform.isIOS) {
+                          var snackBar = const SnackBar(
+                            content: Text('Fitur ini segera hadir'),
+                            duration: Duration(seconds: 3),
+                          );
+                          ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                        } else {
+                          scheduled.scheduledRestaurant(value);
+                          pref.enableReminder(value);
+                        }
+                      },
+                    );
+                  },
+                ),
+              ),
+            ),
+            const SizedBox(height: 36,),
             InkWell(
               onTap: () {
                 Navigator.pushNamed(context, FavoritePage.routeName);
@@ -58,13 +88,13 @@ class SettingPage extends StatelessWidget {
                     children: [
                       Icon(Icons.favorite),
                       SizedBox(width: 16,),
-                      Text('Favoritku'),
+                      Text('Favoritku', style: TextStyle(fontSize: 16),),
                     ],
                   ),
                   Icon(Icons.arrow_forward_ios)
                 ],
               ),
-            )
+            ),
           ],
         ),
       ),

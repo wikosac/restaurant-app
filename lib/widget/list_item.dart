@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:restaurant_app/common/navigation.dart';
 import 'package:restaurant_app/common/styles.dart';
 import 'package:restaurant_app/data/model/restaurant_result.dart';
 import 'package:restaurant_app/data/provider/database_provider.dart';
@@ -17,10 +18,8 @@ class ListItem extends StatelessWidget {
 
   Widget _buildListItem(BuildContext context, Restaurant restaurant) {
     return InkWell(
-      onTap: () {
-        Navigator.pushNamed(context, RestaurantDetailPage.routeName,
-            arguments: restaurant.id);
-      },
+      onTap: () => Navigation.intentWithData(
+          RestaurantDetailPage.routeName, restaurant.id),
       child: Container(
         padding: const EdgeInsets.all(16),
         child: Row(

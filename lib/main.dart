@@ -1,16 +1,37 @@
+import 'dart:io';
+
+import 'package:android_alarm_manager_plus/android_alarm_manager_plus.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:provider/provider.dart';
 import 'package:restaurant_app/common/styles.dart';
 import 'package:restaurant_app/data/api/api_service.dart';
 import 'package:restaurant_app/data/db/database_helper.dart';
+import 'package:restaurant_app/data/preferences/preferences_helper.dart';
 import 'package:restaurant_app/data/provider/database_provider.dart';
+import 'package:restaurant_app/data/provider/preferences_provider.dart';
 import 'package:restaurant_app/data/provider/restaurant_provider.dart';
+import 'package:restaurant_app/data/provider/scheduling_provider.dart';
 import 'package:restaurant_app/ui/detail_page.dart';
 import 'package:restaurant_app/ui/favorite_page.dart';
+import 'package:restaurant_app/utils/background_service.dart';
+import 'package:restaurant_app/utils/notification_helper.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import 'common/navigation.dart';
 
-void main() {
+final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
+
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  final NotificationHelper notificationHelper = NotificationHelper();
+  final BackgroundService service = BackgroundService();
+  service.initializeIsolate();
+  if (Platform.isAndroid) {
+    await AndroidAlarmManager.initialize();
+  }
+  await notificationHelper.initNotifications(flutterLocalNotificationsPlugin);
+
   runApp(const MyApp());
 }
 
@@ -27,7 +48,15 @@ class MyApp extends StatelessWidget {
         ),
         ChangeNotifierProvider(
           create: (_) => DatabaseProvider(databaseHelper: DatabaseHelper()),
-        )
+        ),
+        ChangeNotifierProvider(create: (_) => SchedulingProvider()),
+        ChangeNotifierProvider(
+          create: (_) => PreferencesProvider(
+            preferencesHelper: PreferencesHelper(
+              sharedPreferences: SharedPreferences.getInstance(),
+            ),
+          ),
+        ),
       ],
       child: MaterialApp(
         title: 'Restaurant App',
@@ -39,6 +68,7 @@ class MyApp extends StatelessWidget {
           colorScheme: darkColorScheme,
           useMaterial3: true,
         ),
+        navigatorKey: navigatorKey,
         initialRoute: Navigation.routeName,
         routes: {
           Navigation.routeName: (context) => const Navigation(),

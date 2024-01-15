@@ -39,7 +39,7 @@ class DatabaseProvider extends ChangeNotifier {
       _getFavorite();
     } catch (e) {
       _state = ResultState.error;
-      _message = 'Error: $e';
+      _message = 'Gagal menambah favorit';
       notifyListeners();
     }
   }
@@ -55,7 +55,7 @@ class DatabaseProvider extends ChangeNotifier {
       _getFavorite();
     } catch (e) {
       _state = ResultState.error;
-      _message = 'Error: $e';
+      _message = 'Gagal menghapus favorit';
       notifyListeners();
     }
   }
