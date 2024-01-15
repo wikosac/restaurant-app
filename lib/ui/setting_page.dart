@@ -52,28 +52,26 @@ class SettingPage extends StatelessWidget {
               ]
             ),
             const SizedBox(height: 36,),
-            Material(
-              child: ListTile(
-                title: const Text('Rekomendasi Restoran'),
-                trailing: Consumer2<PreferencesProvider, SchedulingProvider>(
-                  builder: (context, pref, scheduled, _) {
-                    return Switch.adaptive(
-                      value: pref.isReminderActive,
-                      onChanged: (value) async {
-                        if (Platform.isIOS) {
-                          var snackBar = const SnackBar(
-                            content: Text('Fitur ini segera hadir'),
-                            duration: Duration(seconds: 3),
-                          );
-                          ScaffoldMessenger.of(context).showSnackBar(snackBar);
-                        } else {
-                          scheduled.scheduledRestaurant(value);
-                          pref.enableReminder(value);
-                        }
-                      },
-                    );
-                  },
-                ),
+            ListTile(
+              title: const Text('Rekomendasi Restoran'),
+              trailing: Consumer2<PreferencesProvider, SchedulingProvider>(
+                builder: (context, pref, scheduled, _) {
+                  return Switch.adaptive(
+                    value: pref.isReminderActive,
+                    onChanged: (value) async {
+                      if (Platform.isIOS) {
+                        var snackBar = const SnackBar(
+                          content: Text('Fitur ini segera hadir'),
+                          duration: Duration(seconds: 3),
+                        );
+                        ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                      } else {
+                        scheduled.scheduledRestaurant(value);
+                        pref.enableReminder(value);
+                      }
+                    },
+                  );
+                },
               ),
             ),
             const SizedBox(height: 36,),
@@ -81,17 +79,17 @@ class SettingPage extends StatelessWidget {
               onTap: () {
                 Navigator.pushNamed(context, FavoritePage.routeName);
               },
-              child: const Row(
+              child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Row(
                     children: [
-                      Icon(Icons.favorite),
-                      SizedBox(width: 16,),
-                      Text('Favoritku', style: TextStyle(fontSize: 16),),
+                      Icon(Icons.favorite, color: Colors.grey[700],),
+                      const SizedBox(width: 16,),
+                      const Text('Favoritku', style: TextStyle(fontSize: 16),),
                     ],
                   ),
-                  Icon(Icons.arrow_forward_ios)
+                  const Icon(Icons.arrow_forward_ios)
                 ],
               ),
             ),
