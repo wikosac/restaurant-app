@@ -1,5 +1,7 @@
 import 'dart:convert';
 
+import 'package:restaurant_app/data/model/detail_result.dart';
+
 RestaurantResult restaurantResultFromJson(String str) => RestaurantResult.fromJson(json.decode(str));
 
 String restaurantResultToJson(RestaurantResult data) => json.encode(data.toJson());
@@ -66,4 +68,13 @@ class Restaurant {
     "city": city,
     "rating": rating,
   };
+
+  factory Restaurant.fromRestaurantDetail(RestaurantDetail detail) => Restaurant(
+    id: detail.id,
+    name: detail.name,
+    description: detail.description,
+    pictureId: detail.pictureId,
+    city: detail.city,
+    rating: detail.rating,
+  );
 }

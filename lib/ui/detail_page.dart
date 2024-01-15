@@ -4,6 +4,8 @@ import 'package:restaurant_app/common/styles.dart';
 import 'package:restaurant_app/data/api/api_service.dart';
 import 'package:restaurant_app/data/model/detail_result.dart' as dr;
 import 'package:restaurant_app/data/model/detail_result.dart';
+import 'package:restaurant_app/data/model/restaurant_result.dart';
+import 'package:restaurant_app/data/provider/database_provider.dart';
 import 'package:restaurant_app/data/provider/detail_provider.dart';
 import 'package:restaurant_app/utils/result_state.dart';
 import 'package:restaurant_app/widget/bottom_sheet.dart';
@@ -50,6 +52,7 @@ class RestaurantDetailPage extends StatelessWidget {
 
   Widget _buildColumn(BuildContext context, DetailProvider provider) {
     final data = provider.detailResult.restaurant;
+    final rest = Restaurant.fromRestaurantDetail(data);
     return Column(
       children: [
         Hero(
@@ -77,13 +80,39 @@ class RestaurantDetailPage extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(
-                data.name,
-                style: const TextStyle(
-                  color: Colors.black,
-                  fontWeight: FontWeight.bold,
-                  fontSize: 24,
-                ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    data.name,
+                    style: const TextStyle(
+                      color: Colors.black,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 24,
+                    ),
+                  ),
+                  Consumer<DatabaseProvider>(
+                      builder: (context, dbprovider, _) {
+                        return FutureBuilder<bool>(
+                            future: dbprovider.isFavorited(rest.id),
+                            builder: (context, snapshot) {
+                              var isFavorite = snapshot.data ?? false;
+                              return isFavorite
+                                  ? IconButton(
+                                icon: const Icon(Icons.favorite),
+                                color: Theme.of(context).colorScheme.error,
+                                onPressed: () => dbprovider.removeFavorite(rest.id),
+                              )
+                                  : IconButton(
+                                icon: const Icon(Icons.favorite_border),
+                                color: Theme.of(context).colorScheme.secondary,
+                                onPressed: () => dbprovider.addFavorite(rest),
+                              );
+                            }
+                        );
+                      }
+                  )
+                ],
               ),
               Text(
                 data.address,
