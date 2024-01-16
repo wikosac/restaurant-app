@@ -36,6 +36,8 @@ class DatabaseProvider extends ChangeNotifier {
   void addFavorite(Restaurant restaurant) async {
     try {
       await databaseHelper.insertFavorite(restaurant);
+      _message = 'Ditambahkan ke favorit';
+      notifyListeners();
       _getFavorite();
     } catch (e) {
       _state = ResultState.error;
@@ -52,6 +54,8 @@ class DatabaseProvider extends ChangeNotifier {
   void removeFavorite(String id) async {
     try {
       await databaseHelper.removeFavorite(id);
+      _message = 'Favorit telah diperbarui';
+      notifyListeners();
       _getFavorite();
     } catch (e) {
       _state = ResultState.error;
