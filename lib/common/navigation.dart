@@ -17,6 +17,10 @@ class Navigation extends StatefulWidget {
     navigatorKey.currentState?.pushNamed(routeName, arguments: arguments);
   }
 
+  static intent(String routeName) {
+    navigatorKey.currentState?.pushReplacementNamed(routeName);
+  }
+
   static back() => navigatorKey.currentState?.pop();
 
   @override

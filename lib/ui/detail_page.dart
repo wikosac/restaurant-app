@@ -21,8 +21,7 @@ class RestaurantDetailPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider(
-      create: (context) =>
-          DetailProvider(apiService: ApiService(), id: id),
+      create: (context) => DetailProvider(apiService: ApiService(), id: id),
       child: Scaffold(
         appBar: AppBar(),
         body: SingleChildScrollView(
@@ -91,27 +90,26 @@ class RestaurantDetailPage extends StatelessWidget {
                       fontSize: 24,
                     ),
                   ),
-                  Consumer<DatabaseProvider>(
-                      builder: (context, dbprovider, _) {
-                        return FutureBuilder<bool>(
-                            future: dbprovider.isFavorited(rest.id),
-                            builder: (context, snapshot) {
-                              var isFavorite = snapshot.data ?? false;
-                              return isFavorite
-                                  ? IconButton(
-                                icon: const Icon(Icons.favorite),
-                                color: Theme.of(context).colorScheme.error,
-                                onPressed: () => dbprovider.removeFavorite(rest.id),
-                              )
-                                  : IconButton(
-                                icon: const Icon(Icons.favorite_border),
-                                color: Theme.of(context).colorScheme.secondary,
-                                onPressed: () => dbprovider.addFavorite(rest),
-                              );
-                            }
-                        );
-                      }
-                  )
+                  Consumer<DatabaseProvider>(builder: (context, dbprovider, _) {
+                    return FutureBuilder<bool>(
+                        future: dbprovider.isFavorited(rest.id),
+                        builder: (context, snapshot) {
+                          var isFavorite = snapshot.data ?? false;
+                          return isFavorite
+                              ? IconButton(
+                                  icon: const Icon(Icons.favorite),
+                                  color: Theme.of(context).colorScheme.error,
+                                  onPressed: () =>
+                                      dbprovider.removeFavorite(rest.id),
+                                )
+                              : IconButton(
+                                  icon: const Icon(Icons.favorite_border),
+                                  color:
+                                      Theme.of(context).colorScheme.secondary,
+                                  onPressed: () => dbprovider.addFavorite(rest),
+                                );
+                        });
+                  })
                 ],
               ),
               Text(
@@ -278,7 +276,8 @@ class RestaurantDetailPage extends StatelessWidget {
                 height: 8,
               ),
               Consumer<DetailProvider>(builder: (context, provider, _) {
-                return _buildReview(context, provider.detailResult.restaurant.customerReviews);
+                return _buildReview(
+                    context, provider.detailResult.restaurant.customerReviews);
               })
             ],
           ),
@@ -396,7 +395,10 @@ class RestaurantDetailPage extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(review.review, overflow: TextOverflow.ellipsis,),
+              Text(
+                review.review,
+                overflow: TextOverflow.ellipsis,
+              ),
               Text(
                 review.date,
                 style: const TextStyle(fontSize: 10),
