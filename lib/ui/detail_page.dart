@@ -252,6 +252,8 @@ class RestaurantDetailPage extends StatelessWidget {
                   ),
                   Consumer2<DetailProvider, LoginProvider>(
                       builder: (context, detail, login, _) {
+                    final user = login.currentUser;
+                    final name = user?.displayName ?? 'Anonim';
                     return IconButton(
                       icon: const Icon(Icons.add),
                       onPressed: () {
@@ -259,9 +261,7 @@ class RestaurantDetailPage extends StatelessWidget {
                           var msg = 'Ulasan tidak boleh kosong';
                           if (review.isNotEmpty) {
                             detail.postReview(
-                                id: id,
-                                name: login.currentUser!.displayName!,
-                                review: review);
+                                id: id, name: name, review: review);
                             msg = 'Berhasil menambah ulasan';
                           }
                           var snackBar = SnackBar(

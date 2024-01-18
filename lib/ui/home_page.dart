@@ -25,13 +25,21 @@ class HomePage extends StatelessWidget {
             Padding(
                 padding: const EdgeInsets.only(right: 8.0),
                 child: Consumer<LoginProvider>(builder: (context, login, _) {
+                  final user = login.currentUser;
                   return ClipRRect(
                     borderRadius: BorderRadius.circular(24),
-                    child: Image.network(
-                      login.currentUser!.photoURL!,
+                    child: (user != null)
+                    ? Image.network(
+                      user.photoURL!,
                       height: 36,
                       width: 36,
-                    ),
+                    )
+                    : Container(
+                        color: lightColorScheme.primaryContainer,
+                        padding: const EdgeInsets.all(6),
+                        child: const Icon(
+                          Icons.person,
+                        )),
                   );
                 }))
           ]),

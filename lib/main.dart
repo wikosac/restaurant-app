@@ -20,6 +20,7 @@ import 'package:restaurant_app/ui/favorite_page.dart';
 import 'package:restaurant_app/ui/login_page.dart';
 import 'package:restaurant_app/utils/background_service.dart';
 import 'package:restaurant_app/utils/notification_helper.dart';
+import 'package:restaurant_app/utils/result_state.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'common/navigation.dart';
@@ -69,7 +70,10 @@ class MyApp extends StatelessWidget {
         ),
       ],
       child: Consumer<PreferencesProvider>(builder: (context, provider, _) {
-        return MaterialApp(
+        print('--init: ${provider.token}');
+        print('--state: ${provider.state}');
+        return (provider.state != ResultState.loading)
+        ? MaterialApp(
           title: 'Restaurant App',
           theme: ThemeData(
             colorScheme: lightColorScheme,
@@ -92,7 +96,8 @@ class MyApp extends StatelessWidget {
               return RestaurantDetailPage(id: args);
             },
           },
-        );
+        )
+        : const CircularProgressIndicator();
       }),
     );
   }
