@@ -25,16 +25,16 @@ class SettingPage extends StatelessWidget {
         padding: const EdgeInsets.all(16.0),
         child: Column(
           children: [
-            Consumer<LoginProvider>(builder: (context, login, _) {
-              final user = login.currentUser;
-              final name = user?.displayName ?? 'Dwiko Indrawansyah';
-              final email = user?.email ?? 'wesibrani@gmail.com';
+            Consumer<PreferencesProvider>(builder: (context, pref, _) {
+              final user = pref.credential;
+              final email = (user.isNotEmpty) ? user[0] : 'wesibrani@gmail.com';
+              final name = (user.isNotEmpty) ? user[1] : 'Dwiko Indrawansyah';
               return Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     ClipRRect(
                       borderRadius: BorderRadius.circular(84.0),
-                      child: (user == null)
+                      child: (user.isEmpty)
                           ? Image.asset(
                               'assets/pass.jpg',
                               height: 72,
@@ -42,7 +42,7 @@ class SettingPage extends StatelessWidget {
                               fit: BoxFit.cover,
                             )
                           : Image.network(
-                              user.photoURL!,
+                              user[2],
                               height: 72,
                               width: 72,
                             ),
@@ -158,7 +158,7 @@ class SettingPage extends StatelessWidget {
               return TextButton(
                 onPressed: () async {
                   auth.signOut();
-                  pref.deleteToken(pref.token);
+                  pref.deleteCredential();
                   Navigation.intent(LoginPage.routeName);
                 },
                 child: const Text('Keluar'),

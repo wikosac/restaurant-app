@@ -70,8 +70,6 @@ class MyApp extends StatelessWidget {
         ),
       ],
       child: Consumer<PreferencesProvider>(builder: (context, provider, _) {
-        print('--init: ${provider.token}');
-        print('--state: ${provider.state}');
         return (provider.state != ResultState.loading)
         ? MaterialApp(
           title: 'Restaurant App',
@@ -84,7 +82,7 @@ class MyApp extends StatelessWidget {
             useMaterial3: true,
           ),
           navigatorKey: navigatorKey,
-          initialRoute: (provider.token != '')
+          initialRoute: (provider.credential.isNotEmpty)
               ? Navigation.routeName
               : LoginPage.routeName,
           routes: {

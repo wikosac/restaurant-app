@@ -13,7 +13,7 @@ class LoginProvider extends ChangeNotifier {
 
   bool get isLoading => _isLoading;
 
-  Future<String?> signInWithGoogle(BuildContext context) async {
+  Future<User?> signInWithGoogle(BuildContext context) async {
     try {
       _setLoading(true);
       final User? user = await authService.signInWithGoogle();
@@ -21,7 +21,7 @@ class LoginProvider extends ChangeNotifier {
         currentUser = user;
         print('Signed in with Google: $user');
         Navigation.intent(Navigation.routeName);
-        return user.uid;
+        return user;
       } else {
         print('Google Sign-In failed');
       }

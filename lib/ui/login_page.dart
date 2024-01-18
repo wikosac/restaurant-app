@@ -32,9 +32,10 @@ class LoginPage extends StatelessWidget {
         builder: (context, auth, pref, _) {
       return ElevatedButton(
         onPressed: () async {
-          final uid = await auth.signInWithGoogle(context);
-          if (uid != null) {
-            pref.setToken(uid);
+          final user = await auth.signInWithGoogle(context);
+          if (user != null) {
+            final credential = [user.email!, user.displayName!, user.photoURL!];
+            pref.setCredential(credential);
           }
         },
         child: auth.isLoading

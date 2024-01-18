@@ -7,7 +7,7 @@ import 'package:restaurant_app/data/model/detail_result.dart';
 import 'package:restaurant_app/data/model/restaurant_result.dart';
 import 'package:restaurant_app/data/provider/database_provider.dart';
 import 'package:restaurant_app/data/provider/detail_provider.dart';
-import 'package:restaurant_app/data/provider/login_provider.dart';
+import 'package:restaurant_app/data/provider/preferences_provider.dart';
 import 'package:restaurant_app/utils/result_state.dart';
 import 'package:restaurant_app/widget/bottom_sheet.dart';
 import 'package:restaurant_app/widget/shimmer_detail.dart';
@@ -250,10 +250,10 @@ class RestaurantDetailPage extends StatelessWidget {
                     'Ulasan',
                     style: TextStyle(fontWeight: FontWeight.bold),
                   ),
-                  Consumer2<DetailProvider, LoginProvider>(
-                      builder: (context, detail, login, _) {
-                    final user = login.currentUser;
-                    final name = user?.displayName ?? 'Anonim';
+                  Consumer2<DetailProvider, PreferencesProvider>(
+                      builder: (context, detail, pref, _) {
+                    final user = pref.credential;
+                    final name = (user.isNotEmpty) ? user[1] : 'Anonim';
                     return IconButton(
                       icon: const Icon(Icons.add),
                       onPressed: () {
@@ -379,9 +379,10 @@ class RestaurantDetailPage extends StatelessWidget {
               padding: const EdgeInsets.only(right: 8.0),
               child: ClipRRect(
                   borderRadius: BorderRadius.circular(24),
-                  child: Consumer<LoginProvider>(builder: (context, login, _) {
-                    final user = login.currentUser;
-                    return (review.name != user!.displayName)
+                  child: Consumer<PreferencesProvider>(builder: (context, pref, _) {
+                    final user = pref.credential;
+                    final name = (user.isNotEmpty) ? user[1] : 'Anonim';
+                    return (review.name != name)
                         ? Container(
                             color: lightColorScheme.primaryContainer,
                             padding: const EdgeInsets.all(6),
@@ -389,7 +390,7 @@ class RestaurantDetailPage extends StatelessWidget {
                               Icons.person,
                             ))
                         : Image.network(
-                            user.photoURL!,
+                            user[2],
                             height: 36,
                             width: 36,
                           );

@@ -6,7 +6,7 @@ class PreferencesProvider extends ChangeNotifier {
   PreferencesHelper preferencesHelper;
 
   PreferencesProvider({required this.preferencesHelper}) {
-    _getToken();
+    _getCredential();
     _getReminderPreferences();
   }
 
@@ -14,9 +14,9 @@ class PreferencesProvider extends ChangeNotifier {
 
   bool get isReminderActive => _isReminderActive;
 
-  String _token = '';
+  List<String> _credential = [];
 
-  String get token => _token;
+  List<String> get credential => _credential;
 
   late ResultState _state;
 
@@ -32,15 +32,14 @@ class PreferencesProvider extends ChangeNotifier {
     _getReminderPreferences();
   }
 
-  void _getToken() async {
+  void _getCredential() async {
     try {
       _state = ResultState.loading;
       notifyListeners();
-      final result = await preferencesHelper.token;
-      print(result);
+      final result = await preferencesHelper.credential;
 
-      if (result != '') {
-        _token = result;
+      if (result.isNotEmpty) {
+        _credential = result;
         _state = ResultState.hasData;
         notifyListeners();
       } else {
@@ -54,14 +53,14 @@ class PreferencesProvider extends ChangeNotifier {
     }
   }
 
-  void setToken(String uid) {
-    preferencesHelper.setToken(uid);
-    _getToken();
+  void setCredential(List<String> credential) {
+    preferencesHelper.setCredential(credential);
+    _getCredential();
   }
 
-  void deleteToken(String uid) {
-    preferencesHelper.deleteToken(uid);
-    _getToken();
+  void deleteCredential() {
+    preferencesHelper.deleteCredential();
+    _getCredential();
     _state = ResultState.noData;
     notifyListeners();
   }

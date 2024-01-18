@@ -6,7 +6,7 @@ class PreferencesHelper {
   PreferencesHelper({required this.sharedPreferences});
 
   static const dailyReminder = 'DAILY_REMINDER';
-  static const uidToken = 'UID_TOKEN';
+  static const credentialKey = 'CREDENTIAL_KEY';
 
   Future<bool> get isReminderActive async {
     final prefs = await sharedPreferences;
@@ -18,18 +18,18 @@ class PreferencesHelper {
     prefs.setBool(dailyReminder, value);
   }
 
-  Future<String> get token async {
+  Future<List<String>> get credential async {
     final prefs = await sharedPreferences;
-    return prefs.getString(uidToken) ?? '';
+    return prefs.getStringList(credentialKey) ?? [];
   }
 
-  void setToken(String token) async {
+  void setCredential(List<String> credential) async {
     final prefs = await sharedPreferences;
-    prefs.setString(uidToken, token);
+    prefs.setStringList(credentialKey, credential);
   }
 
-  void deleteToken(String token) async {
+  void deleteCredential() async {
     final prefs = await sharedPreferences;
-    prefs.remove(uidToken);
+    prefs.remove(credentialKey);
   }
 }

@@ -3,7 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:restaurant_app/common/navigation.dart';
 import 'package:restaurant_app/common/styles.dart';
 import 'package:restaurant_app/data/model/restaurant_result.dart';
-import 'package:restaurant_app/data/provider/login_provider.dart';
+import 'package:restaurant_app/data/provider/preferences_provider.dart';
 import 'package:restaurant_app/data/provider/restaurant_provider.dart';
 import 'package:restaurant_app/utils/result_state.dart';
 import 'package:restaurant_app/widget/shimmer_card.dart';
@@ -24,13 +24,13 @@ class HomePage extends StatelessWidget {
           actions: [
             Padding(
                 padding: const EdgeInsets.only(right: 8.0),
-                child: Consumer<LoginProvider>(builder: (context, login, _) {
-                  final user = login.currentUser;
+                child: Consumer<PreferencesProvider>(builder: (context, pref, _) {
+                  final credential = pref.credential;
                   return ClipRRect(
                     borderRadius: BorderRadius.circular(24),
-                    child: (user != null)
+                    child: (credential.isNotEmpty)
                     ? Image.network(
-                      user.photoURL!,
+                      credential[2],
                       height: 36,
                       width: 36,
                     )
