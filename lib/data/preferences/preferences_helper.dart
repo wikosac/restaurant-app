@@ -18,9 +18,9 @@ class PreferencesHelper {
     prefs.setBool(dailyReminder, value);
   }
 
-  Future<String?> get token async {
+  Future<String> get token async {
     final prefs = await sharedPreferences;
-    return prefs.getString(uidToken);
+    return prefs.getString(uidToken) ?? '';
   }
 
   void setToken(String token) async {

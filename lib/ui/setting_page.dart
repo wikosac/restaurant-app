@@ -18,44 +18,43 @@ class SettingPage extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
           title: const Text(
-        'Pengaturan',
-        style: TextStyle(fontWeight: FontWeight.bold),
-      )),
+            'Pengaturan',
+            style: TextStyle(fontWeight: FontWeight.bold),
+          )),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
           children: [
-            Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
-              ClipRRect(
-                borderRadius: BorderRadius.circular(84.0),
-                child: Image.asset(
-                  'assets/pass.jpg',
-                  fit: BoxFit.cover,
-                  width: 72,
-                  height: 72,
+            Consumer<LoginProvider>(builder: (context, login, _) {
+              final user = login.currentUser;
+              return Row(
+                  crossAxisAlignment: CrossAxisAlignment.start, children: [
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(84.0),
+                  child: Image.network(user!.photoURL!, height: 72, width: 72,),
                 ),
-              ),
-              const SizedBox(
-                width: 16.0,
-              ),
-              const SizedBox(
-                height: 72,
-                child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text(
-                        "Dwiko Indrawansyah",
-                        style: TextStyle(
-                            fontWeight: FontWeight.bold, fontSize: 16.0),
-                      ),
-                      Text(
-                        "wesibrani@gmail.com",
-                        style: TextStyle(fontSize: 12.0),
-                      )
-                    ]),
-              ),
-            ]),
+                const SizedBox(
+                  width: 16.0,
+                ),
+                SizedBox(
+                  height: 72,
+                  child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(
+                          user.displayName!,
+                          style: const TextStyle(
+                              fontWeight: FontWeight.bold, fontSize: 16.0),
+                        ),
+                        Text(
+                          user.email!,
+                          style: const TextStyle(fontSize: 12.0),
+                        )
+                      ]),
+                ),
+              ]);
+            }),
             const SizedBox(
               height: 36,
             ),
@@ -113,9 +112,16 @@ class SettingPage extends StatelessWidget {
             const SizedBox(
               height: 36,
             ),
-            ElevatedButton(
-              onPressed: () => _showLogoutConfirmationDialog(context),
-              child: const Text('Logout'),
+            ElevatedButton.icon(
+                onPressed: () => _showLogoutConfirmationDialog(context),
+                label: const Text('Keluar'),
+                icon: const Icon(Icons.logout),
+                style: ElevatedButton.styleFrom(
+                    fixedSize: Size.fromWidth(MediaQuery
+                        .of(context)
+                        .size
+                        .width)
+                )
             ),
           ],
         ),
@@ -128,25 +134,26 @@ class SettingPage extends StatelessWidget {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: const Text('Logout Confirmation'),
-          content: const Text('Are you sure you want to logout?'),
+          title: const Text('Keluar'),
+          content: const Text('Apa kamu yakin?'),
           actions: <Widget>[
             TextButton(
               onPressed: () {
                 Navigator.of(context).pop(); // Close the dialog
               },
-              child: const Text('Cancel'),
+              child: const Text('Batal'),
             ),
-            Consumer2<LoginProvider, PreferencesProvider>(builder: (context, auth, pref, _) {
-              return TextButton(
-                onPressed: () async {
-                  auth.signOut();
-                  pref.deleteToken(pref.token!);
-                  Navigation.intent(LoginPage.routeName);
-                },
-                child: const Text('Logout'),
-              );
-            }),
+            Consumer2<LoginProvider, PreferencesProvider>(
+                builder: (context, auth, pref, _) {
+                  return TextButton(
+                    onPressed: () async {
+                      auth.signOut();
+                      pref.deleteToken(pref.token);
+                      Navigation.intent(LoginPage.routeName);
+                    },
+                    child: const Text('Keluar'),
+                  );
+                }),
           ],
         );
       },

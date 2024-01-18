@@ -7,6 +7,7 @@ import 'package:restaurant_app/data/model/detail_result.dart';
 import 'package:restaurant_app/data/model/restaurant_result.dart';
 import 'package:restaurant_app/data/provider/database_provider.dart';
 import 'package:restaurant_app/data/provider/detail_provider.dart';
+import 'package:restaurant_app/data/provider/login_provider.dart';
 import 'package:restaurant_app/utils/result_state.dart';
 import 'package:restaurant_app/widget/bottom_sheet.dart';
 import 'package:restaurant_app/widget/shimmer_detail.dart';
@@ -90,23 +91,22 @@ class RestaurantDetailPage extends StatelessWidget {
                       fontSize: 24,
                     ),
                   ),
-                  Consumer<DatabaseProvider>(builder: (context, dbprovider, _) {
+                  Consumer<DatabaseProvider>(builder: (context, db, _) {
                     return FutureBuilder<bool>(
-                        future: dbprovider.isFavorited(rest.id),
+                        future: db.isFavorited(rest.id),
                         builder: (context, snapshot) {
                           var isFavorite = snapshot.data ?? false;
                           return isFavorite
                               ? IconButton(
                                   icon: const Icon(Icons.favorite),
                                   color: Theme.of(context).colorScheme.error,
-                                  onPressed: () =>
-                                      dbprovider.removeFavorite(rest.id),
+                                  onPressed: () => db.removeFavorite(rest.id),
                                 )
                               : IconButton(
                                   icon: const Icon(Icons.favorite_border),
                                   color:
                                       Theme.of(context).colorScheme.secondary,
-                                  onPressed: () => dbprovider.addFavorite(rest),
+                                  onPressed: () => db.addFavorite(rest),
                                 );
                         });
                   })
@@ -250,15 +250,18 @@ class RestaurantDetailPage extends StatelessWidget {
                     'Ulasan',
                     style: TextStyle(fontWeight: FontWeight.bold),
                   ),
-                  Consumer<DetailProvider>(builder: (context, provider, _) {
+                  Consumer2<DetailProvider, LoginProvider>(
+                      builder: (context, detail, login, _) {
                     return IconButton(
                       icon: const Icon(Icons.add),
                       onPressed: () {
                         showBottomSheetDialog(context, (review) {
                           var msg = 'Ulasan tidak boleh kosong';
                           if (review.isNotEmpty) {
-                            provider.postReview(
-                                id: id, name: 'Anonim', review: review);
+                            detail.postReview(
+                                id: id,
+                                name: login.currentUser!.displayName!,
+                                review: review);
                             msg = 'Berhasil menambah ulasan';
                           }
                           var snackBar = SnackBar(
@@ -375,14 +378,22 @@ class RestaurantDetailPage extends StatelessWidget {
             Padding(
               padding: const EdgeInsets.only(right: 8.0),
               child: ClipRRect(
-                borderRadius: BorderRadius.circular(24),
-                child: Container(
-                    color: lightColorScheme.primaryContainer,
-                    padding: const EdgeInsets.all(6),
-                    child: const Icon(
-                      Icons.person,
-                    )),
-              ),
+                  borderRadius: BorderRadius.circular(24),
+                  child: Consumer<LoginProvider>(builder: (context, login, _) {
+                    final user = login.currentUser;
+                    return (review.name != user!.displayName)
+                        ? Container(
+                            color: lightColorScheme.primaryContainer,
+                            padding: const EdgeInsets.all(6),
+                            child: const Icon(
+                              Icons.person,
+                            ))
+                        : Image.network(
+                            user.photoURL!,
+                            height: 36,
+                            width: 36,
+                          );
+                  })),
             ),
             Text(
               review.name,

@@ -7,6 +7,8 @@ class LoginProvider extends ChangeNotifier {
 
   final AuthService authService = AuthService();
 
+  User? currentUser;
+
   bool _isLoading = false;
 
   bool get isLoading => _isLoading;
@@ -16,6 +18,7 @@ class LoginProvider extends ChangeNotifier {
       _setLoading(true);
       final User? user = await authService.signInWithGoogle();
       if (user != null) {
+        currentUser = user;
         print('Signed in with Google: $user');
         Navigation.intent(Navigation.routeName);
         return user.uid;
@@ -25,6 +28,7 @@ class LoginProvider extends ChangeNotifier {
     } finally {
       _setLoading(false);
     }
+    return null;
   }
 
   Future<void> signOut() async {

@@ -28,8 +28,7 @@ class PreferencesProvider extends ChangeNotifier {
   }
 
   void _getToken() async {
-    final uid = await preferencesHelper.token;
-    if (uid != null) _token = uid;
+    _token = await preferencesHelper.token;
     notifyListeners();
   }
 

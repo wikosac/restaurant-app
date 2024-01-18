@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
 import 'package:restaurant_app/common/styles.dart';
 import 'package:restaurant_app/data/provider/login_provider.dart';
@@ -17,8 +18,8 @@ class LoginPage extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Image.asset('assets/restaurant.png', height: 100, width: 100),
-            const SizedBox(height: 100),
+            SvgPicture.asset('assets/login.svg', height: 300,),
+            const SizedBox(height: 48),
             _buildGoogleButton(),
           ],
         ),
@@ -29,23 +30,30 @@ class LoginPage extends StatelessWidget {
   Widget _buildGoogleButton() {
     return Consumer2<LoginProvider, PreferencesProvider>(
         builder: (context, auth, pref, _) {
-          return ElevatedButton.icon(
-            onPressed: () async {
-              final uid = await auth.signInWithGoogle(context);
-              if (uid != null) {
-                pref.setToken(uid);
-              }
-              print(pref.token);
-            },
-            icon: const Icon(Icons.person),
-            label: auth.isLoading
-                ? const Padding(
-                  padding: EdgeInsets.all(8.0),
-                  child: CircularProgressIndicator(),
-                )
-                : const Text('Sign in'),
-          );
-        }
-    );
+      return ElevatedButton(
+        onPressed: () async {
+          final uid = await auth.signInWithGoogle(context);
+          if (uid != null) {
+            pref.setToken(uid);
+          }
+        },
+        child: auth.isLoading
+            ? const CircularProgressIndicator()
+            : Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                SvgPicture.asset(
+                  'assets/google.svg',
+                  width: 28,
+                  height: 28,
+                ),
+                const SizedBox(
+                  width: 8,
+                ),
+                const Text('Masuk'),
+              ],
+            ),
+      );
+    });
   }
 }

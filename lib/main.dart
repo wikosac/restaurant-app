@@ -80,7 +80,7 @@ class MyApp extends StatelessWidget {
             useMaterial3: true,
           ),
           navigatorKey: navigatorKey,
-          initialRoute: (provider.token != null)
+          initialRoute: (provider.token != '')
               ? Navigation.routeName
               : LoginPage.routeName,
           routes: {
