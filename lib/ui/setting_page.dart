@@ -141,7 +141,7 @@ class SettingPage extends StatelessWidget {
               return TextButton(
                 onPressed: () async {
                   auth.signOut();
-                  await pref.deleteToken(pref.token!);
+                  pref.deleteToken(pref.token!);
                   Navigation.intent(LoginPage.routeName);
                 },
                 child: const Text('Logout'),

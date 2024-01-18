@@ -33,7 +33,7 @@ class LoginPage extends StatelessWidget {
             onPressed: () async {
               final uid = await auth.signInWithGoogle(context);
               if (uid != null) {
-                await pref.setToken(uid);
+                pref.setToken(uid);
               }
               print(pref.token);
             },
