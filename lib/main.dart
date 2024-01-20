@@ -69,34 +69,37 @@ class MyApp extends StatelessWidget {
           ),
         ),
       ],
-      child: Consumer<PreferencesProvider>(builder: (context, provider, _) {
-        return (provider.state != ResultState.loading)
-        ? MaterialApp(
-          title: 'Restaurant App',
-          theme: ThemeData(
-            colorScheme: lightColorScheme,
-            useMaterial3: true,
-          ),
-          darkTheme: ThemeData(
-            colorScheme: darkColorScheme,
-            useMaterial3: true,
-          ),
-          navigatorKey: navigatorKey,
-          initialRoute: (provider.credential.isNotEmpty)
-              ? Navigation.routeName
-              : LoginPage.routeName,
-          routes: {
-            LoginPage.routeName: (context) => const LoginPage(),
-            Navigation.routeName: (context) => const Navigation(),
-            FavoritePage.routeName: (context) => const FavoritePage(),
-            RestaurantDetailPage.routeName: (context) {
-              final args = ModalRoute.of(context)?.settings.arguments as String;
-              return RestaurantDetailPage(id: args);
-            },
-          },
-        )
-        : const CircularProgressIndicator();
-      }),
+      child: Consumer<PreferencesProvider>(
+        builder: (context, provider, _) {
+          return (provider.state != ResultState.loading)
+              ? MaterialApp(
+                  title: 'Restaurant App',
+                  theme: ThemeData(
+                    colorScheme: lightColorScheme,
+                    useMaterial3: true,
+                  ),
+                  darkTheme: ThemeData(
+                    colorScheme: darkColorScheme,
+                    useMaterial3: true,
+                  ),
+                  navigatorKey: navigatorKey,
+                  initialRoute: (provider.credential.isNotEmpty)
+                      ? Navigation.routeName
+                      : LoginPage.routeName,
+                  routes: {
+                    LoginPage.routeName: (context) => const LoginPage(),
+                    Navigation.routeName: (context) => const Navigation(),
+                    FavoritePage.routeName: (context) => const FavoritePage(),
+                    RestaurantDetailPage.routeName: (context) {
+                      final args =
+                          ModalRoute.of(context)?.settings.arguments as String;
+                      return RestaurantDetailPage(id: args);
+                    },
+                  },
+                )
+              : const CircularProgressIndicator();
+        },
+      ),
     );
   }
 }

@@ -25,16 +25,20 @@ class SettingPage extends StatelessWidget {
         padding: const EdgeInsets.all(16.0),
         child: Column(
           children: [
-            Consumer<PreferencesProvider>(builder: (context, pref, _) {
-              final user = pref.credential;
-              final email = (user.isNotEmpty) ? user[0] : 'wesibrani@gmail.com';
-              final name = (user.isNotEmpty) ? user[1] : 'Dwiko Indrawansyah';
-              return Row(
+            Consumer<PreferencesProvider>(
+              builder: (context, pref, _) {
+                final user = pref.credential;
+                final email =
+                    (user.isNotEmpty) ? user[0] : 'wesibrani@gmail.com';
+                final name = (user.isNotEmpty && user[1].isNotEmpty)
+                    ? user[1]
+                    : 'Dwiko Indrawansyah';
+                return Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     ClipRRect(
                       borderRadius: BorderRadius.circular(84.0),
-                      child: (user.isEmpty)
+                      child: (user.isEmpty || user[2].isEmpty)
                           ? Image.asset(
                               'assets/pass.jpg',
                               height: 72,
@@ -53,22 +57,25 @@ class SettingPage extends StatelessWidget {
                     SizedBox(
                       height: 72,
                       child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Text(
-                              name,
-                              style: const TextStyle(
-                                  fontWeight: FontWeight.bold, fontSize: 16.0),
-                            ),
-                            Text(
-                              email,
-                              style: const TextStyle(fontSize: 12.0),
-                            )
-                          ]),
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text(
+                            name,
+                            style: const TextStyle(
+                                fontWeight: FontWeight.bold, fontSize: 16.0),
+                          ),
+                          Text(
+                            email,
+                            style: const TextStyle(fontSize: 12.0),
+                          )
+                        ],
+                      ),
                     ),
-                  ]);
-            }),
+                  ],
+                );
+              },
+            ),
             const SizedBox(
               height: 36,
             ),
@@ -127,12 +134,13 @@ class SettingPage extends StatelessWidget {
               height: 36,
             ),
             ElevatedButton.icon(
-                onPressed: () => _showLogoutConfirmationDialog(context),
-                label: const Text('Keluar'),
-                icon: const Icon(Icons.logout),
-                style: ElevatedButton.styleFrom(
-                    fixedSize:
-                        Size.fromWidth(MediaQuery.of(context).size.width))),
+              onPressed: () => _showLogoutConfirmationDialog(context),
+              label: const Text('Keluar'),
+              icon: const Icon(Icons.logout),
+              style: ElevatedButton.styleFrom(
+                fixedSize: Size.fromWidth(MediaQuery.of(context).size.width),
+              ),
+            ),
           ],
         ),
       ),
@@ -154,16 +162,17 @@ class SettingPage extends StatelessWidget {
               child: const Text('Batal'),
             ),
             Consumer2<LoginProvider, PreferencesProvider>(
-                builder: (context, auth, pref, _) {
-              return TextButton(
-                onPressed: () async {
-                  auth.signOut();
-                  pref.deleteCredential();
-                  Navigation.intent(LoginPage.routeName);
-                },
-                child: const Text('Keluar'),
-              );
-            }),
+              builder: (context, auth, pref, _) {
+                return TextButton(
+                  onPressed: () {
+                    auth.signOut();
+                    pref.deleteCredential();
+                    Navigation.intent(LoginPage.routeName);
+                  },
+                  child: const Text('Keluar'),
+                );
+              },
+            ),
           ],
         );
       },

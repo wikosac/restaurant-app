@@ -17,32 +17,37 @@ class HomePage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-          title: const Text(
-            'Selamat datang!',
-            style: TextStyle(fontWeight: FontWeight.bold),
+        title: const Text(
+          'Selamat datang!',
+          style: TextStyle(fontWeight: FontWeight.bold),
+        ),
+        actions: [
+          Padding(
+            padding: const EdgeInsets.only(right: 8.0),
+            child: Consumer<PreferencesProvider>(
+              builder: (context, pref, _) {
+                final credential = pref.credential;
+                return ClipRRect(
+                  borderRadius: BorderRadius.circular(24),
+                  child: (credential.isNotEmpty && credential[2].isNotEmpty)
+                      ? Image.network(
+                          credential[2],
+                          height: 36,
+                          width: 36,
+                        )
+                      : Container(
+                          color: lightColorScheme.primaryContainer,
+                          padding: const EdgeInsets.all(6),
+                          child: const Icon(
+                            Icons.person,
+                          ),
+                        ),
+                );
+              },
+            ),
           ),
-          actions: [
-            Padding(
-                padding: const EdgeInsets.only(right: 8.0),
-                child: Consumer<PreferencesProvider>(builder: (context, pref, _) {
-                  final credential = pref.credential;
-                  return ClipRRect(
-                    borderRadius: BorderRadius.circular(24),
-                    child: (credential.isNotEmpty)
-                    ? Image.network(
-                      credential[2],
-                      height: 36,
-                      width: 36,
-                    )
-                    : Container(
-                        color: lightColorScheme.primaryContainer,
-                        padding: const EdgeInsets.all(6),
-                        child: const Icon(
-                          Icons.person,
-                        )),
-                  );
-                }))
-          ]),
+        ],
+      ),
       body: SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -126,11 +131,12 @@ class HomePage extends StatelessWidget {
         return SizedBox(
           height: 180,
           child: ListView.builder(
-              itemCount: 5,
-              scrollDirection: Axis.horizontal,
-              itemBuilder: (context, index) {
-                return const Expanded(child: ShimmerCard());
-              }),
+            itemCount: 5,
+            scrollDirection: Axis.horizontal,
+            itemBuilder: (context, index) {
+              return const Expanded(child: ShimmerCard());
+            },
+          ),
         );
       },
     );

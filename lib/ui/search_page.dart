@@ -18,7 +18,8 @@ class SearchPage extends StatelessWidget {
           surfaceTintColor: Colors.white,
           title: Padding(
             padding: const EdgeInsets.all(8.0),
-            child: Consumer<RestaurantProvider>(builder: (context, provider, _) {
+            child:
+                Consumer<RestaurantProvider>(builder: (context, provider, _) {
               return TextField(
                 controller: controller,
                 onChanged: (text) {
@@ -63,10 +64,11 @@ class SearchPage extends StatelessWidget {
           return SizedBox(
             height: 1000,
             child: ListView.builder(
-                itemCount: 10,
-                itemBuilder: (context, index) {
-                  return const MyShimmer();
-                }),
+              itemCount: 10,
+              itemBuilder: (context, index) {
+                return const MyShimmer();
+              },
+            ),
           );
         } else if (provider.state == ResultState.hasData) {
           final data = provider.restaurantList;
@@ -74,18 +76,21 @@ class SearchPage extends StatelessWidget {
             return SizedBox(
               height: 1000,
               child: ListView.builder(
-                  itemCount: 10,
-                  itemBuilder: (context, index) {
-                    return const MyShimmer();
-                  }),
+                itemCount: 10,
+                itemBuilder: (context, index) {
+                  return const MyShimmer();
+                },
+              ),
             );
           } else if (provider.searchState == ResultState.noData) {
-            return Column(children: [
-              Padding(
-                padding: const EdgeInsets.only(top: 24.0),
-                child: Center(child: Text(provider.message)),
-              )
-            ]);
+            return Column(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.only(top: 24.0),
+                  child: Center(child: Text(provider.message)),
+                )
+              ],
+            );
           } else if (provider.searchState == ResultState.error) {
             return Center(
               child: Material(

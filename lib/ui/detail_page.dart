@@ -26,25 +26,27 @@ class RestaurantDetailPage extends StatelessWidget {
       child: Scaffold(
         appBar: AppBar(),
         body: SingleChildScrollView(
-          child: Consumer<DetailProvider>(builder: (context, state, _) {
-            if (state.state == ResultState.loading) {
+          child: Consumer<DetailProvider>(
+            builder: (context, state, _) {
+              if (state.state == ResultState.loading) {
+                return const ShimmerDetailPage();
+              } else if (state.state == ResultState.hasData) {
+                return _buildColumn(context, state);
+              } else if (state.state == ResultState.noData) {
+                return SizedBox(
+                    height: 120, child: Center(child: Text(state.message)));
+              } else if (state.state == ResultState.error) {
+                return SizedBox(
+                  width: MediaQuery.of(context).size.width,
+                  height: MediaQuery.of(context).size.height - 180,
+                  child: Center(
+                    child: Text(state.message),
+                  ),
+                );
+              }
               return const ShimmerDetailPage();
-            } else if (state.state == ResultState.hasData) {
-              return _buildColumn(context, state);
-            } else if (state.state == ResultState.noData) {
-              return SizedBox(
-                  height: 120, child: Center(child: Text(state.message)));
-            } else if (state.state == ResultState.error) {
-              return SizedBox(
-                width: MediaQuery.of(context).size.width,
-                height: MediaQuery.of(context).size.height - 180,
-                child: Center(
-                  child: Text(state.message),
-                ),
-              );
-            }
-            return const ShimmerDetailPage();
-          }),
+            },
+          ),
         ),
       ),
     );
@@ -56,25 +58,27 @@ class RestaurantDetailPage extends StatelessWidget {
     return Column(
       children: [
         Hero(
-            tag: data.pictureId,
-            child: ClipRRect(
-                borderRadius:
-                    const BorderRadius.vertical(bottom: Radius.circular(16)),
-                child: Image.network(
-                  "https://restaurant-api.dicoding.dev/images/large/${data.pictureId}",
-                  fit: BoxFit.cover,
-                  loadingBuilder: (context, child, loadingProgress) {
-                    if (loadingProgress == null) {
-                      return child;
-                    } else {
-                      return Image.asset(
-                        'assets/restaurant.png',
-                        fit: BoxFit.cover,
-                        height: 180,
-                      );
-                    }
-                  },
-                ))),
+          tag: data.pictureId,
+          child: ClipRRect(
+            borderRadius:
+                const BorderRadius.vertical(bottom: Radius.circular(16)),
+            child: Image.network(
+              "https://restaurant-api.dicoding.dev/images/large/${data.pictureId}",
+              fit: BoxFit.cover,
+              loadingBuilder: (context, child, loadingProgress) {
+                if (loadingProgress == null) {
+                  return child;
+                } else {
+                  return Image.asset(
+                    'assets/restaurant.png',
+                    fit: BoxFit.cover,
+                    height: 180,
+                  );
+                }
+              },
+            ),
+          ),
+        ),
         Padding(
           padding: const EdgeInsets.all(16),
           child: Column(
@@ -91,8 +95,9 @@ class RestaurantDetailPage extends StatelessWidget {
                       fontSize: 24,
                     ),
                   ),
-                  Consumer<DatabaseProvider>(builder: (context, db, _) {
-                    return FutureBuilder<bool>(
+                  Consumer<DatabaseProvider>(
+                    builder: (context, db, _) {
+                      return FutureBuilder<bool>(
                         future: db.isFavorited(rest.id),
                         builder: (context, snapshot) {
                           var isFavorite = snapshot.data ?? false;
@@ -108,8 +113,10 @@ class RestaurantDetailPage extends StatelessWidget {
                                       Theme.of(context).colorScheme.secondary,
                                   onPressed: () => db.addFavorite(rest),
                                 );
-                        });
-                  })
+                        },
+                      );
+                    },
+                  )
                 ],
               ),
               Text(
@@ -182,18 +189,19 @@ class RestaurantDetailPage extends StatelessWidget {
                       ClipRRect(
                         borderRadius: BorderRadius.circular(36.0),
                         child: Container(
-                            decoration: BoxDecoration(
-                                color: lightColorScheme.onInverseSurface),
-                            padding: const EdgeInsets.all(12.0),
-                            child: Padding(
-                              padding:
-                                  const EdgeInsets.symmetric(horizontal: 8.0),
-                              child: Text(
-                                data.city,
-                                style: const TextStyle(
-                                    fontSize: 12, fontWeight: FontWeight.bold),
-                              ),
-                            )),
+                          decoration: BoxDecoration(
+                              color: lightColorScheme.onInverseSurface),
+                          padding: const EdgeInsets.all(12.0),
+                          child: Padding(
+                            padding:
+                                const EdgeInsets.symmetric(horizontal: 8.0),
+                            child: Text(
+                              data.city,
+                              style: const TextStyle(
+                                  fontSize: 12, fontWeight: FontWeight.bold),
+                            ),
+                          ),
+                        ),
                       ),
                       const SizedBox(
                         height: 4,
@@ -251,37 +259,46 @@ class RestaurantDetailPage extends StatelessWidget {
                     style: TextStyle(fontWeight: FontWeight.bold),
                   ),
                   Consumer2<DetailProvider, PreferencesProvider>(
-                      builder: (context, detail, pref, _) {
-                    final user = pref.credential;
-                    final name = (user.isNotEmpty) ? user[1] : 'Anonim';
-                    return IconButton(
-                      icon: const Icon(Icons.add),
-                      onPressed: () {
-                        showBottomSheetDialog(context, (review) {
-                          var msg = 'Ulasan tidak boleh kosong';
-                          if (review.isNotEmpty) {
-                            detail.postReview(
-                                id: id, name: name, review: review);
-                            msg = 'Berhasil menambah ulasan';
-                          }
-                          var snackBar = SnackBar(
-                            content: Text(msg),
-                            duration: const Duration(seconds: 3),
+                    builder: (context, detail, pref, _) {
+                      final user = pref.credential;
+                      final name = (user.isNotEmpty && user[1].isNotEmpty)
+                          ? user[1]
+                          : 'Anonim';
+                      return IconButton(
+                        icon: const Icon(Icons.add),
+                        onPressed: () {
+                          showBottomSheetDialog(
+                            context,
+                            (review) {
+                              var msg = 'Ulasan tidak boleh kosong';
+                              if (review.isNotEmpty) {
+                                detail.postReview(
+                                    id: id, name: name, review: review);
+                                msg = 'Berhasil menambah ulasan';
+                              }
+                              var snackBar = SnackBar(
+                                content: Text(msg),
+                                duration: const Duration(seconds: 3),
+                              );
+                              ScaffoldMessenger.of(context)
+                                  .showSnackBar(snackBar);
+                            },
                           );
-                          ScaffoldMessenger.of(context).showSnackBar(snackBar);
-                        });
-                      },
-                    );
-                  }),
+                        },
+                      );
+                    },
+                  ),
                 ],
               ),
               const SizedBox(
                 height: 8,
               ),
-              Consumer<DetailProvider>(builder: (context, provider, _) {
-                return _buildReview(
-                    context, provider.detailResult.restaurant.customerReviews);
-              })
+              Consumer<DetailProvider>(
+                builder: (context, provider, _) {
+                  return _buildReview(context,
+                      provider.detailResult.restaurant.customerReviews);
+                },
+              )
             ],
           ),
         ),
@@ -378,27 +395,34 @@ class RestaurantDetailPage extends StatelessWidget {
             Padding(
               padding: const EdgeInsets.only(right: 8.0),
               child: ClipRRect(
-                  borderRadius: BorderRadius.circular(24),
-                  child: Consumer<PreferencesProvider>(builder: (context, pref, _) {
+                borderRadius: BorderRadius.circular(24),
+                child: Consumer<PreferencesProvider>(
+                  builder: (context, pref, _) {
                     final user = pref.credential;
                     final name = (user.isNotEmpty) ? user[1] : 'Anonim';
-                    return (review.name != name)
+                    return (user.isEmpty || review.name != name)
                         ? Container(
                             color: lightColorScheme.primaryContainer,
                             padding: const EdgeInsets.all(6),
                             child: const Icon(
                               Icons.person,
-                            ))
+                            ),
+                          )
                         : Image.network(
                             user[2],
                             height: 36,
                             width: 36,
                           );
-                  })),
+                  },
+                ),
+              ),
             ),
-            Text(
-              review.name,
-              style: const TextStyle(fontWeight: FontWeight.bold),
+            Expanded(
+              child: Text(
+                review.name,
+                style: const TextStyle(fontWeight: FontWeight.bold),
+                overflow: TextOverflow.ellipsis,
+              ),
             )
           ],
         ),
@@ -417,7 +441,7 @@ class RestaurantDetailPage extends StatelessWidget {
               ),
             ],
           ),
-        )
+        ),
       ],
     );
   }

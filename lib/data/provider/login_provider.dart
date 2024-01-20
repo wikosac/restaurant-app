@@ -31,6 +31,24 @@ class LoginProvider extends ChangeNotifier {
     return null;
   }
 
+  Future<User?> signInWithEmailAndPassword(BuildContext context, String email, String password) async {
+    try {
+      _setLoading(true);
+      final User? user = await authService.signInWithEmailAndPassword(email, password);
+      if (user != null) {
+        currentUser = user;
+        print('Signed in with email: $user');
+        Navigation.intent(Navigation.routeName);
+        return user;
+      } else {
+        print('Email Sign-In failed');
+      }
+    } finally {
+      _setLoading(false);
+    }
+    return null;
+  }
+
   Future<void> signOut() async {
     await authService.signOut();
   }

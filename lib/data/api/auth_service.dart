@@ -29,6 +29,42 @@ class AuthService {
     }
   }
 
+  Future<User?> signUpWithEmailAndPassword(String email, String password) async {
+    try {
+      final UserCredential authResult = await _auth.createUserWithEmailAndPassword(
+        email: email,
+        password: password,
+      );
+
+      final User? user = authResult.user;
+      return user;
+    } catch (error) {
+      print('Sign Up Error: $error');
+      return null;
+    }
+  }
+
+  Future<User?> signInWithEmailAndPassword(String email, String password) async {
+    try {
+      final UserCredential authResult = await _auth.signInWithEmailAndPassword(
+        email: email,
+        password: password,
+      );
+
+      final User? user = authResult.user;
+      return user;
+    } catch (error) {
+      // If sign-in fails due to user not found, attempt sign-up
+      if (error is FirebaseAuthException && error.code == 'invalid-credential') {
+        print('User not found. Attempting to sign up.');
+        return signUpWithEmailAndPassword(email, password);
+      }
+
+      print('Sign In Error: $error');
+      return null;
+    }
+  }
+
   Future<void> signOut() async {
     await googleSignIn.signOut();
     await _auth.signOut();

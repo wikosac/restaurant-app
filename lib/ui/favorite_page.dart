@@ -15,12 +15,10 @@ class FavoritePage extends StatelessWidget {
     return Scaffold(
         appBar: AppBar(
             title: const Text(
-              'Favorit',
-              style: TextStyle(fontWeight: FontWeight.bold),
-            )
-        ),
-        body: _buildList(context)
-    );
+          'Favorit',
+          style: TextStyle(fontWeight: FontWeight.bold),
+        )),
+        body: _buildList(context));
   }
 
   Widget _buildList(BuildContext context) {
@@ -30,10 +28,11 @@ class FavoritePage extends StatelessWidget {
           return SizedBox(
             height: 1000,
             child: ListView.builder(
-                itemCount: 10,
-                itemBuilder: (context, index) {
-                  return const MyShimmer();
-                }),
+              itemCount: 10,
+              itemBuilder: (context, index) {
+                return const MyShimmer();
+              },
+            ),
           );
         } else if (provider.state == ResultState.hasData) {
           final data = provider.favorites;
@@ -45,9 +44,12 @@ class FavoritePage extends StatelessWidget {
           );
         } else if (provider.state == ResultState.noData) {
           return SizedBox(
-              width: MediaQuery.of(context).size.width,
-              height: MediaQuery.of(context).size.height - 180,
-              child: Center(child: Text(provider.message)));
+            width: MediaQuery.of(context).size.width,
+            height: MediaQuery.of(context).size.height - 180,
+            child: Center(
+              child: Text(provider.message),
+            ),
+          );
         } else if (provider.state == ResultState.error) {
           return Center(
             child: Material(

@@ -64,8 +64,8 @@ class ListItem extends StatelessWidget {
                               'Diskon 50%',
                               style: TextStyle(color: Colors.white, fontSize: 10),
                             ),
-                          ))
-                    ]),
+                          ),)
+                    ],),
                   ),
                 ),
                 const SizedBox(
