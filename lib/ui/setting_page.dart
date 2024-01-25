@@ -2,7 +2,6 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:restaurant_app/common/navigation.dart';
 import 'package:restaurant_app/data/provider/login_provider.dart';
 import 'package:restaurant_app/data/provider/preferences_provider.dart';
 import 'package:restaurant_app/data/provider/scheduling_provider.dart';
@@ -167,7 +166,8 @@ class SettingPage extends StatelessWidget {
                   onPressed: () {
                     auth.signOut();
                     pref.deleteCredential();
-                    Navigation.intent(LoginPage.routeName);
+                    Navigator.pushNamedAndRemoveUntil(
+                        context, LoginPage.routeName, (route) => false);
                   },
                   child: const Text('Keluar'),
                 );
